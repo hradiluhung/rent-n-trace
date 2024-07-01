@@ -1,4 +1,4 @@
-import 'package:rent_n_trace/core/constants/statuses.dart';
+import 'package:rent_n_trace/core/constants/status_constants.dart';
 import 'package:rent_n_trace/core/error/exceptions.dart';
 import 'package:rent_n_trace/features/booking/data/models/rent_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,6 +9,10 @@ abstract interface class RentRemoteDataSource {
   Future<RentModel?> getLatestRent(String userId);
 
   Future<RentModel> createRent(RentModel rent);
+
+  Future<String> updateCancelRent(String rentId);
+
+  Future<List<RentModel>> getAllUserRents(String userId);
 }
 
 class RentRemoteDataSourceImpl implements RentRemoteDataSource {
@@ -60,9 +64,20 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
         return null;
       }
 
+      String? driverName;
+      if (rent.first['driver_id'] != null) {
+        final driver = await supabaseClient
+            .from('drivers')
+            .select('name')
+            .eq('id', rent.first['driver_id'])
+            .single();
+        driverName = driver['name'];
+      }
+
       return RentModel.fromJson(rent.first).copyWith(
         carName: rent.first['cars']['name'],
         carImage: rent.first['cars']['images'][0],
+        driverName: driverName,
       );
     } catch (e) {
       throw ServerException(e.toString());
@@ -72,7 +87,6 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
   @override
   Future<RentModel> createRent(RentModel rent) async {
     try {
-      // check whether is there active rent
       final activeRents = await supabaseClient.from('rents').select('*').or(
           'status.eq.${RentStatus.approved}, status.eq.${RentStatus.tracked}');
       if (activeRents.isNotEmpty) {
@@ -83,6 +97,39 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
           await supabaseClient.from('rents').insert(rent.toJson()).select();
 
       return RentModel.fromJson(rentData.first);
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<String> updateCancelRent(String rentId) async {
+    try {
+      await supabaseClient
+          .from('rents')
+          .update({'status': RentStatus.cancelled, 'updated_at': 'now()'})
+          .eq('id', rentId)
+          .select();
+
+      return "Booking berhasil dibatalkan";
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<List<RentModel>> getAllUserRents(String userId) async {
+    try {
+      final rents = await supabaseClient
+          .from('rents')
+          .select('*, cars (name, images)')
+          .eq('user_id', userId);
+
+      return rents
+          .map((rent) => RentModel.fromJson(rent).copyWith(
+              carName: rent['cars']['name'],
+              carImage: rent['cars']['images'][0]))
+          .toList();
     } catch (e) {
       throw ServerException(e.toString());
     }

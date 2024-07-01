@@ -14,7 +14,7 @@ class DividerText extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(right: 36.w),
             child: const Divider(
-              color: AppPallete.borderColor,
+              color: AppPalette.borderColor,
               thickness: 1,
             ),
           ),
@@ -27,7 +27,7 @@ class DividerText extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(left: 36.w),
             child: const Divider(
-              color: AppPallete.borderColor,
+              color: AppPalette.borderColor,
               thickness: 1,
             ),
           ),

@@ -14,7 +14,7 @@ class CarModel extends Car {
     return CarModel(
       id: map['id'] ?? '',
       name: map['name'] ?? '',
-      fuelConsumption: map['fuel_consumption'] ?? '',
+      fuelConsumption: map['fuel_consumption'] ?? 0,
       fuelType: map['fuel_type'] ?? '',
       status: map['status'] ?? '',
       images: List<String>.from(map['images'] ?? []),
@@ -24,7 +24,7 @@ class CarModel extends Car {
   CarModel copyWith({
     String? id,
     String? name,
-    String? fuelConsumption,
+    int? fuelConsumption,
     String? fuelType,
     String? status,
     List<String>? images,

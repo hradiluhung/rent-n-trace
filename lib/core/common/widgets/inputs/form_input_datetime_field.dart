@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
 import 'package:rent_n_trace/core/theme/theme.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/primary_button.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class FormRangeDateInputField extends StatefulWidget {
@@ -70,7 +71,7 @@ class FormRangeDateInputFieldState extends State<FormRangeDateInputField> {
       builder: (_) => Center(
         child: SingleChildScrollView(
           child: Dialog(
-            backgroundColor: AppPallete.backgroundColor,
+            backgroundColor: AppPalette.backgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
@@ -83,15 +84,15 @@ class FormRangeDateInputFieldState extends State<FormRangeDateInputField> {
                     onSelectionChanged: _onSelectionChanged,
                     selectionMode: DateRangePickerSelectionMode.range,
                     initialSelectedRange: selectedRange,
-                    backgroundColor: AppPallete.backgroundColor,
-                    rangeSelectionColor: AppPallete.primaryColor4,
-                    startRangeSelectionColor: AppPallete.primaryColor1,
-                    endRangeSelectionColor: AppPallete.primaryColor1,
-                    todayHighlightColor: AppPallete.primaryColor1,
+                    backgroundColor: AppPalette.backgroundColor,
+                    rangeSelectionColor: AppPalette.primaryColor1,
+                    startRangeSelectionColor: AppPalette.primaryColor2,
+                    endRangeSelectionColor: AppPalette.primaryColor2,
+                    todayHighlightColor: AppPalette.primaryColor2,
                     headerStyle: DateRangePickerHeaderStyle(
                       textAlign: TextAlign.center,
                       textStyle: Theme.of(context).textTheme.bodyMedium,
-                      backgroundColor: AppPallete.backgroundColor,
+                      backgroundColor: AppPalette.backgroundColor,
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -100,6 +101,7 @@ class FormRangeDateInputFieldState extends State<FormRangeDateInputField> {
                     children: [
                       SecondaryButton(
                           text: "Batal",
+                          widgetSize: WidgetSizes.small,
                           onPressed: () {
                             selectedRange = null;
                             widget.controller.clear();
@@ -108,6 +110,7 @@ class FormRangeDateInputFieldState extends State<FormRangeDateInputField> {
                       SizedBox(width: 8.w),
                       PrimaryButton(
                         text: "Pilih",
+                        widgetSize: WidgetSizes.small,
                         onPressed: () {
                           widget.onDateSelected(selectedRange);
                           Navigator.of(context).pop();
@@ -146,7 +149,7 @@ class FormRangeDateInputFieldState extends State<FormRangeDateInputField> {
                 prefixIcon: widget.prefixIcon != null
                     ? Icon(
                         widget.prefixIcon,
-                        color: AppPallete.bodyTextColor,
+                        color: AppPalette.bodyTextColor,
                       )
                     : null,
               ),

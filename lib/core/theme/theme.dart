@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:rent_n_trace/core/theme/app_palette.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rent_n_trace/core/theme/app_palette.dart';
 
 class AppTheme {
-  static _border([Color color = AppPallete.borderColor]) => OutlineInputBorder(
+  static _border([Color color = AppPalette.borderColor]) => OutlineInputBorder(
         borderSide: BorderSide(
           color: color,
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(4.r),
+        borderRadius: BorderRadius.circular(8.r),
       );
 
   static final lightThemeMode = ThemeData.light().copyWith(
-    scaffoldBackgroundColor: AppPallete.backgroundColor,
+    scaffoldBackgroundColor: AppPalette.backgroundColor,
     appBarTheme: const AppBarTheme(
-      backgroundColor: AppPallete.backgroundColor,
+      backgroundColor: AppPalette.backgroundColor,
     ),
     dropdownMenuTheme: DropdownMenuThemeData(
         inputDecorationTheme: InputDecorationTheme(
@@ -22,13 +22,13 @@ class AppTheme {
           border: _border(),
           enabledBorder: _border(),
           focusedBorder: _border(),
-          errorBorder: _border(AppPallete.errorColor),
+          errorBorder: _border(AppPalette.errorColor),
           filled: true,
-          fillColor: AppPallete.whiteColor,
+          fillColor: AppPalette.whiteColor,
         ),
         menuStyle: MenuStyle(
           alignment: Alignment.centerLeft,
-          backgroundColor: WidgetStateProperty.all(AppPallete.primaryColor1),
+          backgroundColor: WidgetStateProperty.all(AppPalette.primaryColor2),
           padding: WidgetStateProperty.all(EdgeInsets.symmetric(vertical: 8.h)),
         )),
     inputDecorationTheme: InputDecorationTheme(
@@ -36,101 +36,102 @@ class AppTheme {
       border: _border(),
       enabledBorder: _border(),
       focusedBorder: _border(),
-      errorBorder: _border(AppPallete.errorColor),
+      errorBorder: _border(AppPalette.errorColor),
       filled: true,
-      fillColor: AppPallete.whiteColor,
+      fillColor: AppPalette.whiteColor,
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: AppPallete.primaryColor1,
+      color: AppPalette.primaryColor2,
     ),
     textTheme: TextTheme(
       displayLarge: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 72.sp,
         height: 78.sp / 72.sp,
         fontWeight: FontWeight.w600,
       ),
       displayMedium: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 36.sp,
         height: 42.sp / 36.sp,
         fontWeight: FontWeight.w600,
       ),
       displaySmall: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 24.sp,
         height: 32.sp / 24.sp,
         fontWeight: FontWeight.w600,
       ),
       headlineLarge: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 24.sp,
         height: 32.sp / 24.sp,
         fontWeight: FontWeight.w600,
       ),
       headlineMedium: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 20.sp,
         height: 26.sp / 20.sp,
         fontWeight: FontWeight.w600,
       ),
       headlineSmall: TextStyle(
-        color: AppPallete.headlineTextColor,
+        color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
         fontSize: 12.sp,
         height: 18.sp / 12.sp,
         fontWeight: FontWeight.w600,
       ),
       bodyLarge: TextStyle(
-        color: AppPallete.bodyTextColor,
+        color: AppPalette.bodyTextColor,
         fontSize: 20.sp,
         height: 28.sp / 20.sp,
         fontWeight: FontWeight.w400,
       ),
       bodyMedium: TextStyle(
-        color: AppPallete.bodyTextColor,
+        color: AppPalette.bodyTextColor,
         fontSize: 16.sp,
         height: 24.sp / 16.sp,
         fontWeight: FontWeight.w400,
       ),
       bodySmall: TextStyle(
-        color: AppPallete.smallTextColor,
-        fontSize: 12.sp,
-        height: 16.sp / 12.sp,
+        color: AppPalette.smallTextColor,
+        fontSize: 14.sp,
+        height: 20.sp / 14.sp,
         fontWeight: FontWeight.w400,
       ),
       labelMedium: TextStyle(
-        color: AppPallete.bodyTextColor,
+        color: AppPalette.bodyTextColor,
         fontSize: 14.sp,
         height: 24.sp / 16.sp,
         fontWeight: FontWeight.w600,
       ),
     ),
     dialogTheme: DialogTheme(
-      backgroundColor: AppPallete.backgroundColor,
+      backgroundColor: AppPalette.whiteColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
       ),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: AppPallete.whiteColor,
-      selectedItemColor: AppPallete.primaryColor1,
-      unselectedItemColor: AppPallete.bodyTextColor,
+      backgroundColor: AppPalette.whiteColor,
+      selectedItemColor: AppPalette.primaryColor2,
+      unselectedItemColor: AppPalette.bodyTextColor,
     ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
-        TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.android: ZoomPageTransitionsBuilder(),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       },
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        overlayColor: WidgetStateProperty.all(AppPallete.primaryOverlayColor),
+        overlayColor:
+            WidgetStateProperty.all(AppPalette.greyColor.withOpacity(0.1)),
       ),
     ),
   );
@@ -141,27 +142,27 @@ extension CustomStyle on TextTheme {
         fontSize: 14.sp,
         height: 20.sp / 14.sp,
         fontWeight: FontWeight.w600,
-        color: AppPallete.whiteColor,
+        color: AppPalette.whiteColor,
       );
 
   TextStyle get buttonSecondary => TextStyle(
         fontSize: 14.sp,
         height: 20.sp / 14.sp,
         fontWeight: FontWeight.w600,
-        color: AppPallete.secondaryButtonTextColor,
+        color: AppPalette.greyColor,
       );
 
   TextStyle get buttonTetriary => TextStyle(
         fontSize: 14.sp,
         height: 20.sp / 14.sp,
         fontWeight: FontWeight.w600,
-        color: AppPallete.secondaryButtonTextColor,
+        color: AppPalette.greyColor,
       );
 
   TextStyle get hintMedium => TextStyle(
         fontSize: 14.sp,
         height: 20.sp / 14.sp,
         fontWeight: FontWeight.w400,
-        color: AppPallete.hintTextColor,
+        color: AppPalette.hintTextColor,
       );
 }

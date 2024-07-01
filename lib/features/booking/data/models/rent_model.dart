@@ -104,7 +104,7 @@ class RentModel extends Rent {
       createdAt: createdAt ?? this.createdAt,
       carName: carName ?? this.carName,
       driverId: driverId ?? this.driverId,
-      driverName: driverName ?? this.driverName,
+      driverName: driverName,
       need: need ?? this.need,
       needDetail: needDetail ?? this.needDetail,
       carImage: carImage ?? this.carImage,

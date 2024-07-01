@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rent_n_trace/core/constants/statuses.dart';
+import 'package:rent_n_trace/core/constants/status_constants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
 
 class RentStatusTags extends StatelessWidget {
   final String rentStatus;
-  const RentStatusTags({super.key, required this.rentStatus});
+  final String? additionalText;
+  const RentStatusTags({
+    super.key,
+    required this.rentStatus,
+    this.additionalText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +21,9 @@ class RentStatusTags extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        RentStatus.getDescription(rentStatus),
+        "${RentStatus.getDescription(rentStatus)}${additionalText ?? ''}",
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: rentStatus == RentStatus.approved
-                  ? AppPallete.headlineTextColor
-                  : AppPallete.whiteColor,
+              color: AppPalette.whiteColor,
               fontSize: 10.sp,
             ),
       ),

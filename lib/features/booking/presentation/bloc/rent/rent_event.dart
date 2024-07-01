@@ -52,3 +52,19 @@ final class RentCreateRent extends RentEvent {
     this.carName,
   });
 }
+
+final class RentUpdateCancelRent extends RentEvent {
+  final String rentId;
+
+  RentUpdateCancelRent({
+    required this.rentId,
+  });
+}
+
+final class RentGetAllUserRents extends RentEvent {
+  final String userId;
+
+  RentGetAllUserRents({
+    required this.userId,
+  });
+}

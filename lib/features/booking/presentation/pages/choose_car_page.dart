@@ -5,15 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fpdart/fpdart.dart' as fpdart;
 import 'package:rent_n_trace/core/constants/choose_car_tabs.dart';
-import 'package:rent_n_trace/core/constants/widget_status.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
-import 'package:rent_n_trace/core/utils/show_snackbar.dart';
 import 'package:rent_n_trace/core/utils/show_toast.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/car.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/car/car_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/pages/booking_summary_page.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/primary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
 import 'package:rent_n_trace/features/booking/presentation/widgets/cards/selectable_car_card.dart';
 
 class ChooseCarPage extends StatefulWidget {
@@ -93,8 +92,8 @@ class _ChooseCarPageState extends State<ChooseCarPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  AppPallete.transparentColor,
-                  AppPallete.halfTransparentColor,
+                  AppPalette.transparentColor,
+                  AppPalette.halfTransparentColor,
                 ],
               ),
             ),
@@ -109,7 +108,7 @@ class _ChooseCarPageState extends State<ChooseCarPage> {
                 if (selectedCar == null) {
                   showToast(
                     context: context,
-                    title: "Pilih kendaraan terlebih dahulu",
+                    message: "Pilih kendaraan terlebih dahulu",
                     icon: EvaIcons.alertCircleOutline,
                     status: WidgetStatus.error,
                   );
@@ -213,8 +212,8 @@ class TabBar extends StatelessWidget {
                 child: Ink(
                   decoration: BoxDecoration(
                     color: selectedTabIndex == chooseCarTabList.indexOf(e)
-                        ? AppPallete.activeTabColor
-                        : AppPallete.transparentGreyColor,
+                        ? AppPalette.activeTabColor
+                        : AppPalette.greyColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Padding(
@@ -222,11 +221,12 @@ class TabBar extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                     child: Text(
                       e.name,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontSize: 14.sp,
                             color:
                                 selectedTabIndex == chooseCarTabList.indexOf(e)
-                                    ? AppPallete.whiteColor
-                                    : AppPallete.bodyTextColor,
+                                    ? AppPalette.whiteColor
+                                    : AppPalette.bodyTextColor,
                           ),
                     ),
                   ),
@@ -260,23 +260,32 @@ class _CarListState extends State<CarList> {
   Widget build(BuildContext context) {
     return BlocConsumer<CarBloc, CarState>(listener: (context, state) {
       if (state is CarFailure) {
-        showSnackBar(context, state.message);
+        showToast(context: context, message: state.message);
       }
     }, builder: (context, state) {
       if (state is CarLoading) {
         return const Center(child: CircularProgressIndicator());
-      } else if (state is CarGetAllAvailabilitySuccess) {
+      } else if (state is CarAllAvailabilityCarsLoaded) {
         final availableCars = state.availableCars;
         final notAvailableCars = state.notAvailableCars;
 
         switch (widget.selectedTabIndex) {
           case 0:
-            return CarListContent(
-              availableCars: availableCars,
-              notAvailableCars: notAvailableCars,
-              selectedCar: widget.selectedCar,
-              onSelectCar: widget.onSelectCar,
-            );
+            if (availableCars.isNotEmpty) {
+              return CarListContent(
+                availableCars: availableCars,
+                notAvailableCars: notAvailableCars,
+                selectedCar: widget.selectedCar,
+                onSelectCar: widget.onSelectCar,
+              );
+            } else {
+              return Text(
+                "Tidak ada mobil",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
+                    ),
+              );
+            }
           case 1:
             return CarListContent(
               availableCars: availableCars,
@@ -284,11 +293,20 @@ class _CarListState extends State<CarList> {
               onSelectCar: widget.onSelectCar,
             );
           case 2:
-            return CarListContent(
-              notAvailableCars: notAvailableCars,
-              selectedCar: widget.selectedCar,
-              onSelectCar: widget.onSelectCar,
-            );
+            if (notAvailableCars.isNotEmpty) {
+              return CarListContent(
+                notAvailableCars: notAvailableCars,
+                selectedCar: widget.selectedCar,
+                onSelectCar: widget.onSelectCar,
+              );
+            } else {
+              return Text(
+                "Tidak ada mobil",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 14.sp,
+                    ),
+              );
+            }
           default:
             return const SizedBox.shrink();
         }

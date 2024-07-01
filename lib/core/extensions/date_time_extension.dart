@@ -12,4 +12,10 @@ extension DateTimeExtension on DateTime {
 
     return formatter.format(this);
   }
+
+  String toFormattedHHmmddMMMMyyyy() {
+    DateFormat formatter = DateFormat('HH:mm - dd MMMM yyyy', 'id_ID');
+
+    return formatter.format(this);
+  }
 }

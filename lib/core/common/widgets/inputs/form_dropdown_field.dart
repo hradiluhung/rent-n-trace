@@ -59,7 +59,7 @@ class FormDropdownField extends StatelessWidget {
             prefixIcon: prefixIcon != null
                 ? Icon(
                     prefixIcon,
-                    color: AppPallete.bodyTextColor,
+                    color: AppPalette.bodyTextColor,
                   )
                 : null,
           ),
@@ -71,14 +71,14 @@ class FormDropdownField extends StatelessWidget {
           textStyle: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: AppPallete.bodyTextColor),
+              ?.copyWith(color: AppPalette.bodyTextColor),
           clearIconProperty: IconProperty(
             icon: EvaIcons.close,
-            color: AppPallete.bodyTextColor,
+            color: AppPalette.bodyTextColor,
           ),
           dropDownIconProperty: IconProperty(
             icon: EvaIcons.chevronDownOutline,
-            color: AppPallete.bodyTextColor,
+            color: AppPalette.bodyTextColor,
           ),
         ),
       ],

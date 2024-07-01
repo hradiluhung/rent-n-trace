@@ -3,11 +3,13 @@ class User {
   final String email;
   final String username;
   final String fullName;
+  final String? division;
 
   User({
     required this.id,
     required this.email,
     required this.username,
     required this.fullName,
+    this.division,
   });
 }

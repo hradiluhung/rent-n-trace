@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/primary_button.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String dismissText;
@@ -9,6 +10,8 @@ class ConfirmationDialog extends StatelessWidget {
   final String content;
   final Function onConfirm;
   final Function onDismiss;
+  final int confirmStatus;
+
   const ConfirmationDialog({
     super.key,
     required this.dismissText,
@@ -17,6 +20,7 @@ class ConfirmationDialog extends StatelessWidget {
     required this.content,
     required this.onConfirm,
     required this.onDismiss,
+    this.confirmStatus = WidgetStatus.normal,
   });
 
   @override
@@ -31,12 +35,15 @@ class ConfirmationDialog extends StatelessWidget {
             onDismiss();
           },
           text: 'Tidak',
+          widgetSize: WidgetSizes.small,
         ),
         PrimaryButton(
           onPressed: () {
             onConfirm();
           },
           text: 'Ya',
+          widgetSize: WidgetSizes.small,
+          widgetStatus: confirmStatus,
         ),
       ],
     );

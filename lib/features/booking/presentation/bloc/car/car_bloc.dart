@@ -38,7 +38,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
 
     res.fold(
       (failure) => emit(CarFailure(failure.message)),
-      (cars) => emit(CarGetAvailableSuccess(cars)),
+      (cars) => emit(CarAvailableCarsLoaded(cars)),
     );
   }
 
@@ -51,7 +51,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
 
     res.fold(
       (failure) => emit(CarFailure(failure.message)),
-      (cars) => emit(CarGetNotAvailableSuccess(cars)),
+      (cars) => emit(CarNotAvailableCarsLoaded(cars)),
     );
   }
 
@@ -60,7 +60,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
 
     res.fold(
       (failure) => emit(CarFailure(failure.message)),
-      (cars) => emit(CarGetAllSuccess(cars)),
+      (cars) => emit(CarAllCarsLoaded(cars)),
     );
   }
 
@@ -84,7 +84,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
           (failure) => emit(CarFailure(failure.message)),
           (notAvailableCars) {
             emit(
-              CarGetAllAvailabilitySuccess(
+              CarAllAvailabilityCarsLoaded(
                 availableCars: availableCars,
                 notAvailableCars: notAvailableCars,
               ),

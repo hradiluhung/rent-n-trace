@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
 
@@ -28,7 +26,7 @@ class RentStatus {
   static const String cancelled = 'cancelled';
 
   static const Map<String, String> descriptions = {
-    pending: 'Pending',
+    pending: 'Mengunggu Persetujuan',
     rejected: 'Ditolak',
     approved: 'Disetujui',
     tracked: 'Dilacak',
@@ -37,12 +35,12 @@ class RentStatus {
   };
 
   static const Map<String, Color> colors = {
-    pending: AppPallete.pendingColor,
-    rejected: AppPallete.rejectedColor,
-    approved: AppPallete.approvedColor,
-    tracked: AppPallete.trackedColor,
-    done: AppPallete.doneColor,
-    cancelled: AppPallete.cancelledColor,
+    pending: AppPalette.pendingColor,
+    rejected: AppPalette.rejectedColor,
+    approved: AppPalette.approvedColor,
+    tracked: AppPalette.trackedColor,
+    done: AppPalette.doneColor,
+    cancelled: AppPalette.cancelledColor,
   };
 
   static String getDescription(String? status) {

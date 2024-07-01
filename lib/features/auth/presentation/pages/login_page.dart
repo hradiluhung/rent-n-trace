@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/widgets/app_bar_logo.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/circular_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/divider_text.dart';
+import 'package:rent_n_trace/core/common/widgets/layouts/user_layout.dart';
 import 'package:rent_n_trace/core/common/widgets/loader.dart';
-import 'package:rent_n_trace/core/common/widgets/my_back_button.dart';
-import 'package:rent_n_trace/core/common/widgets/inputs/form_input_field.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
-import 'package:rent_n_trace/core/utils/show_snackbar.dart';
-import 'package:rent_n_trace/core/utils/validators.dart';
+import 'package:rent_n_trace/core/utils/show_toast.dart';
 import 'package:rent_n_trace/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:rent_n_trace/features/auth/presentation/widgets/auth_primary_button.dart';
-import 'package:rent_n_trace/features/auth/presentation/widgets/auth_tetriary_button.dart';
-import 'package:rent_n_trace/features/auth/presentation/widgets/divider_text.dart';
-import 'package:rent_n_trace/features/booking/presentation/pages/home_page.dart';
+import 'package:rent_n_trace/features/auth/presentation/widgets/forms/login_form.dart';
 
 class LoginPage extends StatefulWidget {
   static route() => MaterialPageRoute(builder: (context) => const LoginPage());
@@ -24,33 +23,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailTextController = TextEditingController();
-  final _passwordTextController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _emailTextController.dispose();
-    _passwordTextController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const MyBackButton(),
-      ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthFailure) {
-            showSnackBar(context, state.message);
+            showToast(
+                context: context,
+                message: state.message,
+                status: WidgetStatus.error);
           }
 
           if (state is AuthSuccessAuth) {
             Navigator.pushAndRemoveUntil(
               context,
-              HomePage.route(),
+              UserLayout.route(),
               (route) => false,
             );
           }
@@ -59,14 +47,24 @@ class _LoginPageState extends State<LoginPage> {
           if (state is AuthLoading) {
             return const Loader();
           }
-          return SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-              child: Form(
-                key: _formKey,
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CircularButton(
+                          icon: EvaIcons.close,
+                          onClick: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
                     const AppBarLogo(),
                     SizedBox(height: 24.h),
                     Text(
@@ -74,71 +72,39 @@ class _LoginPageState extends State<LoginPage> {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     SizedBox(height: 6.h),
-                    Row(
-                      children: [
-                        Text(
-                          "Silakan ",
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        Text(
-                          "masuk",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                color: AppPallete.primaryColor1,
-                              ),
-                        ),
-                        Text(
-                          " ke aplikasi",
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                      ],
+                    RichText(
+                      text: TextSpan(
+                        text: "Silakan ",
+                        style: Theme.of(context).textTheme.headlineMedium,
+                        children: [
+                          TextSpan(
+                            text: "masuk",
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineMedium
+                                ?.copyWith(
+                                  color: AppPalette.primaryColor2,
+                                ),
+                          ),
+                          TextSpan(
+                            text: "ke aplikasi",
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 74.h),
-                    FormInputField(
-                      controller: _emailTextController,
-                      hintText: "johndoe@gmail.com",
-                      labelText: "Email/Username",
-                      prefixIcon: EvaIcons.emailOutline,
-                      isRequired: true,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) => emailValidator(value),
-                    ),
-                    SizedBox(height: 16.h),
-                    FormInputField(
-                      controller: _passwordTextController,
-                      hintText: "Minimal 8 karakter",
-                      labelText: "Password",
-                      prefixIcon: EvaIcons.lockOutline,
-                      isObscureText: true,
-                      isRequired: true,
-                      validator: (value) => passwordValidator(value),
-                      textInputAction: TextInputAction.done,
-                    ),
-                    SizedBox(height: 16.h),
-                    AuthPrimaryButton(
-                        text: "Masuk",
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            context.read<AuthBloc>().add(
-                                  AuthLogin(
-                                    email: _emailTextController.text.trim(),
-                                    password:
-                                        _passwordTextController.text.trim(),
-                                  ),
-                                );
-                          }
-                        }),
+                    const LoginForm(),
                     SizedBox(height: 16.h),
                     const DividerText(text: "Atau"),
                     SizedBox(height: 16.h),
-                    AuthTetriaryButton(
+                    SecondaryButton(
                       text: "Masuk dengan Google",
                       onPressed: () {
                         context.read<AuthBloc>().add(AuthLoginGoogle());
                       },
                       icon: EvaIcons.google,
+                      isFullWidth: true,
                     ),
                   ],
                 ),

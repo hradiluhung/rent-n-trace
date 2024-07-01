@@ -1,7 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rent_n_trace/core/constants/statuses.dart';
+import 'package:rent_n_trace/core/constants/status_constants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/car.dart';
 
@@ -59,8 +59,8 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
               Container(
                   decoration: BoxDecoration(
                     color: widget.car.status == CarStatus.available
-                        ? AppPallete.primaryColor1
-                        : AppPallete.transparentGreyColor,
+                        ? AppPalette.primaryColor2
+                        : AppPalette.greyColor,
                     borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
                   padding:
@@ -73,8 +73,8 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
                             ? EvaIcons.checkmarkCircle2Outline
                             : EvaIcons.closeCircleOutline,
                         color: widget.car.status == CarStatus.available
-                            ? AppPallete.whiteColor
-                            : AppPallete.bodyTextColor2,
+                            ? AppPalette.whiteColor
+                            : AppPalette.bodyTextColor2,
                         size: 14.w,
                       ),
                       SizedBox(width: 4.w),
@@ -82,8 +82,8 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
                         CarStatus.getDescription(widget.car.status),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: widget.car.status == CarStatus.available
-                                  ? AppPallete.whiteColor
-                                  : AppPallete.bodyTextColor2,
+                                  ? AppPalette.whiteColor
+                                  : AppPalette.bodyTextColor2,
                             ),
                       ),
                     ],
@@ -93,13 +93,12 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
           actions: [
             IconButton(
               style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all(AppPallete.transparentGreyColor),
+                backgroundColor: WidgetStateProperty.all(AppPalette.greyColor),
               ),
               onPressed: () => Navigator.pop(context),
               icon: const Icon(
                 EvaIcons.close,
-                color: AppPallete.bodyTextColor,
+                color: AppPalette.bodyTextColor,
               ),
             )
           ],
@@ -117,10 +116,10 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
         width: 164.w,
         decoration: BoxDecoration(
           color: widget.isSelected
-              ? AppPallete.primaryColor3
+              ? AppPalette.primaryColor4
               : widget.isDisabled
-                  ? AppPallete.transparentGreyColor
-                  : AppPallete.primaryColor4,
+                  ? AppPalette.greyColor
+                  : AppPalette.primaryColor1,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Padding(
@@ -150,10 +149,10 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: widget.isSelected
-                                    ? AppPallete.whiteColor
+                                    ? AppPalette.whiteColor
                                     : widget.isDisabled
-                                        ? AppPallete.bodyTextColor2
-                                        : AppPallete.primaryColor3,
+                                        ? AppPalette.bodyTextColor2
+                                        : AppPalette.primaryColor4,
                                 overflow: TextOverflow.ellipsis,
                               ),
                       maxLines: 1,
@@ -162,8 +161,8 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
                       CarStatus.getDescription(widget.car.status),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: widget.isSelected
-                                ? AppPallete.whiteColor
-                                : AppPallete.bodyTextColor2,
+                                ? AppPalette.whiteColor
+                                : AppPalette.bodyTextColor2,
                           ),
                     ),
                     Align(
@@ -173,8 +172,8 @@ class _SelectableCarCardState extends State<SelectableCarCard> {
                         icon: Icon(
                           EvaIcons.infoOutline,
                           color: widget.isSelected
-                              ? AppPallete.whiteColor
-                              : AppPallete.primaryColor3,
+                              ? AppPalette.whiteColor
+                              : AppPalette.primaryColor4,
                         ),
                       ),
                     ),

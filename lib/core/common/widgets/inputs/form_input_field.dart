@@ -63,7 +63,7 @@ class FormInputField extends StatelessWidget {
             prefixIcon: prefixIcon != null
                 ? Icon(
                     prefixIcon,
-                    color: AppPallete.bodyTextColor,
+                    color: AppPalette.bodyTextColor,
                   )
                 : null,
           ),

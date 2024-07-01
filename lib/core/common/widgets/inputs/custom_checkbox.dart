@@ -33,7 +33,7 @@ class CustomCheckbox extends StatelessWidget {
             Checkbox(
               value: value,
               onChanged: onChanged,
-              activeColor: AppPallete.primaryColor1,
+              activeColor: AppPalette.primaryColor2,
               checkColor: Colors.white,
             ),
             Text(
@@ -48,7 +48,7 @@ class CustomCheckbox extends StatelessWidget {
             child: Text(
               _defaultValidator(value)!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppPallete.errorColor,
+                    color: AppPalette.errorColor,
                   ),
             ),
           ),

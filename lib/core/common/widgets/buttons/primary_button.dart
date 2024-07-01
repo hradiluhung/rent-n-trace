@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rent_n_trace/core/constants/widget_sizes.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
 import 'package:rent_n_trace/core/theme/theme.dart';
 
@@ -11,6 +11,7 @@ class PrimaryButton extends StatelessWidget {
   final bool isDisabled;
   final bool isFullWidth;
   final int widgetSize;
+  final int widgetStatus;
 
   const PrimaryButton({
     super.key,
@@ -20,31 +21,36 @@ class PrimaryButton extends StatelessWidget {
     this.isDisabled = false,
     this.isFullWidth = false,
     this.widgetSize = WidgetSizes.medium,
+    this.widgetStatus = WidgetStatus.normal,
   });
 
   @override
   Widget build(BuildContext context) {
+    Color getBackgroundColor() {
+      switch (widgetStatus) {
+        case WidgetStatus.error:
+          return AppPalette.errorColor.withOpacity(isDisabled ? 0.4 : 1.0);
+        default:
+          return AppPalette.primaryColor2.withOpacity(isDisabled ? 0.4 : 1.0);
+      }
+    }
+
     return Container(
-      height: widgetSize == WidgetSizes.medium ? 36.h : 30.h,
+      height: widgetSize == WidgetSizes.medium ? 40.h : 30.h,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppPallete.primaryColor1.withOpacity(isDisabled ? 0.4 : 1.0),
-            AppPallete.primaryColor2.withOpacity(isDisabled ? 0.4 : 1.0),
-          ],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
+        color: getBackgroundColor(),
         borderRadius: BorderRadius.all(
-          Radius.circular(4.r),
+          Radius.circular(8.r),
         ),
       ),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          fixedSize: Size(isFullWidth ? 395.w : double.infinity,
-              widgetSize == WidgetSizes.medium ? 36.h : 30.h),
-          backgroundColor: AppPallete.transparentColor,
-          shadowColor: AppPallete.transparentColor,
+          fixedSize: Size(
+            isFullWidth ? 395.w : double.infinity,
+            widgetSize == WidgetSizes.medium ? 40.h : 30.h,
+          ),
+          backgroundColor: AppPalette.transparentColor,
+          shadowColor: AppPalette.transparentColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4.r),
           ),
@@ -54,14 +60,14 @@ class PrimaryButton extends StatelessWidget {
             ? Icon(
                 icon,
                 color:
-                    AppPallete.whiteColor.withOpacity(isDisabled ? 0.5 : 1.0),
+                    AppPalette.whiteColor.withOpacity(isDisabled ? 0.5 : 1.0),
               )
             : null,
         label: Text(
           text,
           style: Theme.of(context).textTheme.buttonPrimary.copyWith(
                 color:
-                    AppPallete.whiteColor.withOpacity(isDisabled ? 0.5 : 1.0),
+                    AppPalette.whiteColor.withOpacity(isDisabled ? 0.5 : 1.0),
               ),
         ),
       ),

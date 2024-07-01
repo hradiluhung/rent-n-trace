@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/widgets/loader.dart';
-import 'package:rent_n_trace/core/constants/widget_status.dart';
+import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/extensions/date_time_extension.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
+import 'package:rent_n_trace/core/utils/local_storage_service.dart';
 import 'package:rent_n_trace/core/utils/show_toast.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/rent/rent_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/pages/home_page.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/primary_button.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
 import 'package:rent_n_trace/features/booking/presentation/widgets/dialogs/confirmation_dialog.dart';
 
 class BookingSummaryPage extends StatefulWidget {
@@ -26,6 +27,18 @@ class BookingSummaryPage extends StatefulWidget {
 }
 
 class _BookingSummaryPageState extends State<BookingSummaryPage> {
+  late LocalStorageService _localStorageService;
+
+  @override
+  void initState() {
+    super.initState();
+    _localStorageService = LocalStorageService();
+  }
+
+  void _showLatestRentCardVisibility() async {
+    await _localStorageService.setHideLatestRentCard(false);
+  }
+
   // show confirmation dialog for cancel booking
   void _showCancelConfirmationDialog() {
     showDialog(
@@ -63,7 +76,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
               if (state is RentFailure) {
                 showToast(
                   context: context,
-                  title: state.message,
+                  message: state.message,
                   icon: EvaIcons.alertCircleOutline,
                   status: WidgetStatus.error,
                 );
@@ -72,11 +85,11 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
               if (state is RentCreateRentSuccess) {
                 showToast(
                   context: context,
-                  title: 'Sukses melakukan booking',
+                  message: 'Sukses melakukan booking',
                   icon: EvaIcons.checkmark,
                   status: WidgetStatus.success,
                 );
-
+                _showLatestRentCardVisibility();
                 Navigator.pushAndRemoveUntil(
                   context,
                   HomePage.route(),
@@ -93,7 +106,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppPallete.primaryColor4,
+                      color: AppPalette.primaryColor1,
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Padding(
@@ -120,7 +133,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
@@ -129,7 +142,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
@@ -139,7 +152,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
@@ -148,7 +161,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
@@ -158,7 +171,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
@@ -167,7 +180,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
@@ -177,7 +190,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
@@ -186,7 +199,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
@@ -196,7 +209,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
@@ -205,7 +218,7 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
@@ -215,16 +228,16 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                                 .textTheme
                                 .headlineSmall
                                 ?.copyWith(
-                                  color: AppPallete.bodyTextColor,
+                                  color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
-                            widget.rent.driverName ?? '-',
+                            widget.rent.driverName ?? "-",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
                                 ?.copyWith(
-                                  color: AppPallete.headlineTextColor,
+                                  color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                         ],

@@ -47,7 +47,7 @@ class _LoaderState extends State<Loader> {
           SizedBox(height: 16.h),
           Text(
             "${widget.loadingText}${'.' * _numDots}",
-            style: const TextStyle(fontStyle: FontStyle.italic),
+            style: Theme.of(context).textTheme.bodyMedium,
           )
         ],
       ),

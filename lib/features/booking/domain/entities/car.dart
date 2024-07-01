@@ -1,12 +1,12 @@
 class Car {
   final String id;
   final String name;
-  final String fuelConsumption;
+  final int fuelConsumption;
   final String fuelType;
   final String status;
   final List<String?> images;
 
-  Car({
+  const Car({
     required this.id,
     required this.name,
     required this.fuelConsumption,

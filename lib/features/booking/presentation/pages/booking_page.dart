@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
 import 'package:rent_n_trace/core/common/widgets/inputs/custom_checkbox.dart';
 import 'package:rent_n_trace/core/common/widgets/inputs/form_dropdown_field.dart';
 import 'package:rent_n_trace/core/common/widgets/inputs/form_input_datetime_field.dart';
@@ -13,7 +14,6 @@ import 'package:rent_n_trace/core/constants/needs.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/driver/driver_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/pages/choose_car_page.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/buttons/tetriary_button.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -197,7 +197,7 @@ class _BookingFormState extends State<BookingForm> {
                     return const SizedBox.shrink();
                   }),
                 SizedBox(height: 16.h),
-                TetriaryButton(
+                SecondaryButton(
                   text: "Pilih Kendaraan",
                   onPressed: () {
                     _navigateToChooseCarPage();

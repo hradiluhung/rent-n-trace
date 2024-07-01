@@ -7,6 +7,7 @@ Future<void> initDependencies() async {
   _initRent();
   _initCar();
   _initDriver();
+  _initLocation();
 
   final supabase = await Supabase.initialize(
     url: AppSecrets.supabaseUrl,
@@ -86,6 +87,34 @@ void _initDriver() {
     );
 }
 
+void _initLocation() {
+  serviceLocator
+    // Data sources
+    ..registerFactory<LocationRemoteDatasource>(
+      () => LocationRemoteDatasourceImpl(
+        serviceLocator(),
+      ),
+    )
+    // Repositories
+    ..registerFactory<LocationRepository>(
+      () => LocationRepositoryImpl(
+        serviceLocator(),
+      ),
+    )
+    // Use cases
+    ..registerFactory(
+      () => GetLocation(
+        serviceLocator(),
+      ),
+    )
+    // Blocs
+    ..registerLazySingleton(
+      () => LocationBloc(
+        getLocation: serviceLocator(),
+      ),
+    );
+}
+
 void _initRent() {
   serviceLocator
     // Data sources
@@ -116,12 +145,22 @@ void _initRent() {
         serviceLocator(),
       ),
     )
+    ..registerFactory(
+      () => UpdateCancelRent(
+        serviceLocator(),
+      ),
+    )
+    ..registerFactory(() => GetAllUserRents(
+          serviceLocator(),
+        ))
     // Blocs
     ..registerLazySingleton(
       () => RentBloc(
         getCurrentMonthRent: serviceLocator(),
         createRent: serviceLocator(),
         getApprovedOrTrackedRent: serviceLocator(),
+        updateCancelRent: serviceLocator(),
+        getAllUserRents: serviceLocator(),
       ),
     );
 }

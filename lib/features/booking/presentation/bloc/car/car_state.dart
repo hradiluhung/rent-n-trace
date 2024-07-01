@@ -9,32 +9,32 @@ final class CarInitial extends CarState {}
 
 final class CarLoading extends CarState {}
 
-final class CarGetAllSuccess extends CarState {
-  final List<Car> cars;
-  const CarGetAllSuccess(this.cars);
-}
-
-final class CarGetAvailableSuccess extends CarState {
-  final List<Car> cars;
-  const CarGetAvailableSuccess(this.cars);
-}
-
-final class CarGetNotAvailableSuccess extends CarState {
-  final List<Car> cars;
-  const CarGetNotAvailableSuccess(this.cars);
-}
-
-class CarGetAllAvailabilitySuccess extends CarState {
-  final List<Car> availableCars;
-  final List<Car> notAvailableCars;
-
-  const CarGetAllAvailabilitySuccess({
-    required this.availableCars,
-    required this.notAvailableCars,
-  });
-}
-
 final class CarFailure extends CarState {
   final String message;
   const CarFailure(this.message);
+}
+
+final class CarAllCarsLoaded extends CarState {
+  final List<Car> cars;
+  const CarAllCarsLoaded(this.cars);
+}
+
+final class CarAvailableCarsLoaded extends CarState {
+  final List<Car> cars;
+  const CarAvailableCarsLoaded(this.cars);
+}
+
+final class CarNotAvailableCarsLoaded extends CarState {
+  final List<Car> cars;
+  const CarNotAvailableCarsLoaded(this.cars);
+}
+
+class CarAllAvailabilityCarsLoaded extends CarState {
+  final List<Car> availableCars;
+  final List<Car> notAvailableCars;
+
+  const CarAllAvailabilityCarsLoaded({
+    required this.availableCars,
+    required this.notAvailableCars,
+  });
 }
