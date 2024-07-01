@@ -97,7 +97,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           const DividerText(text: "Atau"),
                           SizedBox(height: 16.h),
                           SecondaryButton(
-                            text: "Masuk dengan Google",
+                            text: "Daftar dengan Google",
                             onPressed: () {
                               context.read<AuthBloc>().add(AuthLoginGoogle());
                             },
