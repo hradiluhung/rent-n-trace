@@ -23,14 +23,14 @@ class CarBloc extends Bloc<CarEvent, CarState> {
         _getAllCars = getAllCars,
         super(CarInitial()) {
     on<CarEvent>((event, emit) => emit(CarLoading()));
-    on<CarGetAvailableCars>(_onGetAvailableCars);
-    on<CarGetNotAvailableCars>(_onGetNotAvailableCars);
-    on<CarGetAllCars>(_onGetAllCars);
-    on<CarGetAllAvailabilityCars>(_onGetAllAvailabilityCars);
+    on<GetAvailableCarsEvent>(_onGetAvailableCars);
+    on<GetNotAvailableCarsEvent>(_onGetNotAvailableCars);
+    on<GetAllCarsEvent>(_onGetAllCars);
+    on<GetAllAvailabilityCarsEvent>(_onGetAllAvailabilityCars);
   }
 
   void _onGetAvailableCars(
-      CarGetAvailableCars event, Emitter<CarState> emit) async {
+      GetAvailableCarsEvent event, Emitter<CarState> emit) async {
     final res = await _getAvailableCars(GetAvailableCarsParams(
       startDate: event.startDatetime,
       endDate: event.endDatetime,
@@ -43,7 +43,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
   }
 
   void _onGetNotAvailableCars(
-      CarGetNotAvailableCars event, Emitter<CarState> emit) async {
+      GetNotAvailableCarsEvent event, Emitter<CarState> emit) async {
     final res = await _getNotAvailableCars(GetNotAvailableCarsParams(
       startDate: event.startDatetime,
       endDate: event.endDatetime,
@@ -55,7 +55,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
     );
   }
 
-  void _onGetAllCars(CarGetAllCars event, Emitter<CarState> emit) async {
+  void _onGetAllCars(GetAllCarsEvent event, Emitter<CarState> emit) async {
     final res = await _getAllCars(NoParams());
 
     res.fold(
@@ -65,7 +65,7 @@ class CarBloc extends Bloc<CarEvent, CarState> {
   }
 
   void _onGetAllAvailabilityCars(
-      CarGetAllAvailabilityCars event, Emitter<CarState> emit) async {
+      GetAllAvailabilityCarsEvent event, Emitter<CarState> emit) async {
     final availableRes = await _getAvailableCars(GetAvailableCarsParams(
       startDate: event.startDatetime,
       endDate: event.endDatetime,

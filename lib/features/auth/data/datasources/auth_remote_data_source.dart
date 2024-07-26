@@ -41,12 +41,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             .select()
             .eq('id', currentUserSession!.user.id);
 
-        return UserModel.fromJson(userData.first).copyWith(
+        final user = UserModel.fromJson(userData.first).copyWith(
           email: currentUserSession!.user.email,
         );
+
+        return user;
       }
 
       return null;
+    } on AuthException catch (e) {
+      throw AuthException(e.message);
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -67,9 +71,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw const ServerException('User tidak ditemukan!');
       }
 
-      return UserModel.fromJson(response.user!.toJson());
+      final userData = await supabaseClient
+          .from('profiles')
+          .select()
+          .eq('id', response.user!.id);
+
+      return UserModel.fromJson(userData.first).copyWith(
+        email: response.user!.email,
+      );
     } on AuthException catch (e) {
-      throw ServerException(e.message);
+      throw AuthException(e.message);
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -106,6 +117,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> logout() async {
     try {
       await supabaseClient.auth.signOut();
+    } on AuthException catch (e) {
+      throw AuthException(e.message);
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -136,6 +149,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         idToken: idToken,
         accessToken: accessToken,
       );
+    } on AuthException catch (e) {
+      throw AuthException(e.message);
     } catch (e) {
       throw ServerException(e.toString());
     }

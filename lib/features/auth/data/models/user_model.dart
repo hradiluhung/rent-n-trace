@@ -5,17 +5,17 @@ class UserModel extends User {
     required super.id,
     required super.email,
     required super.fullName,
-    required super.username,
     super.division,
+    super.photo,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> map) {
     return UserModel(
       id: map['id'] ?? '',
       email: map['email'] ?? '',
-      fullName: map['fullName'] ?? '',
-      username: map['username'] ?? '',
+      fullName: map['full_name'] ?? '',
       division: map['division'],
+      photo: map['photo'],
     );
   }
 
@@ -23,15 +23,15 @@ class UserModel extends User {
     String? id,
     String? email,
     String? fullName,
-    String? username,
     String? division,
+    String? photo,
   }) {
     return UserModel(
       id: id ?? this.id,
       email: email ?? this.email,
       fullName: fullName ?? this.fullName,
-      username: username ?? this.username,
       division: division ?? this.division,
+      photo: photo ?? this.photo,
     );
   }
 }

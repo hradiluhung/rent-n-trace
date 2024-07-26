@@ -1,5 +1,5 @@
 class Rent {
-  final String id;
+  final String? id;
   final String userId;
   final String? carId;
   final DateTime? updatedAt;
@@ -17,7 +17,7 @@ class Rent {
   final String? status;
 
   Rent({
-    required this.id,
+    this.id,
     required this.userId,
     this.carId,
     this.updatedAt,
@@ -34,35 +34,4 @@ class Rent {
     this.carImage,
     this.status,
   });
-
-  static Rent createInitial({
-    required String id,
-    required String userId,
-    required DateTime startDateTime,
-    required DateTime endDateTime,
-    required String destination,
-    required String need,
-    required String needDetail,
-    String? carId,
-    String? driverId,
-    String? driverName,
-  }) {
-    final DateTime now = DateTime.now();
-
-    return Rent(
-      id: id,
-      userId: userId,
-      carId: carId,
-      updatedAt: now,
-      startDateTime: startDateTime,
-      endDateTime: endDateTime,
-      destination: destination,
-      fuelConsumption: null,
-      createdAt: now,
-      need: need,
-      needDetail: needDetail,
-      driverId: driverId,
-      driverName: driverName,
-    );
-  }
 }

@@ -2,12 +2,12 @@ import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 
 class RentModel extends Rent {
   RentModel({
+    super.id,
     super.updatedAt,
     required super.startDateTime,
     required super.endDateTime,
     required super.destination,
     required super.userId,
-    required super.id,
     super.carId,
     super.fuelConsumption,
     super.createdAt,
@@ -61,12 +61,10 @@ class RentModel extends Rent {
       'driver_id': driverId,
     };
 
-    // Add created_at only if it's not null
     if (createdAt != null) {
       data['created_at'] = createdAt!.toIso8601String();
     }
 
-    // Add updated_at only if it's not null
     if (updatedAt != null) {
       data['updated_at'] = updatedAt!.toIso8601String();
     }

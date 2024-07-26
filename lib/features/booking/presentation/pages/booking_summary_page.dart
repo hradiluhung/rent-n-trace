@@ -1,23 +1,21 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/layouts/user_layout.dart';
 import 'package:rent_n_trace/core/common/widgets/loader.dart';
 import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/extensions/date_time_extension.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
-import 'package:rent_n_trace/core/utils/local_storage_service.dart';
-import 'package:rent_n_trace/core/utils/show_toast.dart';
+import 'package:rent_n_trace/core/services/local_storage_service.dart';
+import 'package:rent_n_trace/core/utils/toast.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/rent/rent_bloc.dart';
-import 'package:rent_n_trace/features/booking/presentation/pages/home_page.dart';
-import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
-import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/dialogs/confirmation_dialog.dart';
+import 'package:rent_n_trace/core/utils/confirmation_dialog.dart';
 
 class BookingSummaryPage extends StatefulWidget {
-  static route(Rent rent) =>
-      MaterialPageRoute(builder: (context) => BookingSummaryPage(rent: rent));
+  static route(Rent rent) => MaterialPageRoute(builder: (context) => BookingSummaryPage(rent: rent));
 
   final Rent rent;
   const BookingSummaryPage({super.key, required this.rent});
@@ -39,24 +37,23 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
     await _localStorageService.setHideLatestRentCard(false);
   }
 
-  // show confirmation dialog for cancel booking
   void _showCancelConfirmationDialog() {
     showDialog(
-        context: context,
-        builder: (context) => ConfirmationDialog(
-              dismissText: "Tidak",
-              confirmText: "Ya",
-              title: "Konfirmasi",
-              content: "Apakah anda yakin ingin membatalkan booking ini?",
-              onConfirm: () {
-                Navigator.pop(context);
-                Navigator.pushAndRemoveUntil(
-                    context, HomePage.route(), (route) => false);
-              },
-              onDismiss: () {
-                Navigator.pop(context);
-              },
-            ));
+      context: context,
+      builder: (context) => ConfirmationDialog(
+        dismissText: "Tidak",
+        confirmText: "Ya",
+        title: "Konfirmasi",
+        content: "Apakah anda yakin ingin membatalkan booking ini?",
+        onConfirm: () {
+          Navigator.pop(context);
+          Navigator.pushAndRemoveUntil(context, UserLayout.route(), (route) => false);
+        },
+        onDismiss: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   @override
@@ -77,7 +74,6 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                 showToast(
                   context: context,
                   message: state.message,
-                  icon: EvaIcons.alertCircleOutline,
                   status: WidgetStatus.error,
                 );
               }
@@ -86,13 +82,12 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                 showToast(
                   context: context,
                   message: 'Sukses melakukan booking',
-                  icon: EvaIcons.checkmark,
                   status: WidgetStatus.success,
                 );
                 _showLatestRentCardVisibility();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  HomePage.route(),
+                  UserLayout.route(),
                   (route) => false,
                 );
               }
@@ -129,114 +124,78 @@ class _BookingSummaryPageState extends State<BookingSummaryPage> {
                           SizedBox(height: 4.h),
                           Text(
                             'Nama Mobil',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             '${widget.rent.carName}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             'Tanggal Booking',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             '${widget.rent.startDateTime.toFormattedddMMMMyyyy()} - ${widget.rent.endDateTime.toFormattedddMMMMyyyy()}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             'Tujuan',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             widget.rent.destination,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             'Kebutuhan',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             widget.rent.need,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             'Detail Kebutuhan',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             widget.rent.needDetail,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),
                           SizedBox(height: 4.h),
                           Text(
                             'Supir',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: AppPalette.bodyTextColor,
                                 ),
                           ),
                           Text(
                             widget.rent.driverName ?? "-",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppPalette.darkHeadlineTextColor,
                                 ),
                           ),

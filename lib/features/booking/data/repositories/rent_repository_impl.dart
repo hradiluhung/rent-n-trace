@@ -12,8 +12,7 @@ class RentRepositoryImpl implements RentRepository {
   RentRepositoryImpl(this.rentRemoteDataSource);
 
   @override
-  Future<Either<Failure, List<Rent>>> getCurrentMonthRents(
-      String userId) async {
+  Future<Either<Failure, List<Rent>>> getCurrentMonthRents(String userId) async {
     try {
       final rents = await rentRemoteDataSource.getCurrentMonthRents(
         userId,
@@ -49,11 +48,11 @@ class RentRepositoryImpl implements RentRepository {
   }) async {
     try {
       RentModel rent = RentModel(
+        id: const Uuid().v1(),
         startDateTime: startDate,
         endDateTime: endDate,
         destination: destination,
         userId: userId,
-        id: const Uuid().v1(),
         carId: carId,
         need: need,
         needDetail: needDetail,
@@ -82,6 +81,16 @@ class RentRepositoryImpl implements RentRepository {
     try {
       final rents = await rentRemoteDataSource.getAllUserRents(userId);
       return Right(rents);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Rent>> getRentById(String rentId) async {
+    try {
+      final rent = await rentRemoteDataSource.getRentById(rentId);
+      return Right(rent);
     } catch (e) {
       return Left(Failure(e.toString()));
     }

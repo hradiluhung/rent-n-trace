@@ -8,15 +8,61 @@ Future<void> initDependencies() async {
   _initCar();
   _initDriver();
   _initLocation();
+  _initProfile();
+  _initTrackingCar();
 
   final supabase = await Supabase.initialize(
     url: AppSecrets.supabaseUrl,
     anonKey: AppSecrets.supabaseAnonKey,
   );
-  serviceLocator.registerLazySingleton(() => supabase.client);
-
   // core
+  serviceLocator.registerLazySingleton(() => supabase.client);
   serviceLocator.registerLazySingleton(() => AppUserCubit());
+}
+
+void _initTrackingCar() {
+  // Use cases
+  serviceLocator
+    ..registerFactory(
+      () => GetRentById(
+        serviceLocator(),
+      ),
+    )
+    // Bloc
+    ..registerLazySingleton(
+      () => TrackingRentBloc(
+        getRentById: serviceLocator(),
+      ),
+    );
+}
+
+void _initProfile() {
+  serviceLocator
+    // Data sources
+    ..registerFactory<ProfileRemoteDataSource>(
+      () => ProfileRemoteDataSourceImpl(
+        serviceLocator(),
+      ),
+    )
+    // Repositories
+    ..registerFactory<ProfileRepository>(
+      () => ProfileRepositoryImpl(
+        serviceLocator(),
+      ),
+    )
+    // Use cases
+    ..registerFactory(
+      () => UpdateUserProfile(
+        serviceLocator(),
+      ),
+    )
+    // Blocs
+    ..registerLazySingleton(
+      () => ProfileBloc(
+        updateUserProfile: serviceLocator(),
+        appUserCubit: serviceLocator(),
+      ),
+    );
 }
 
 void _initCar() {
@@ -103,14 +149,20 @@ void _initLocation() {
     )
     // Use cases
     ..registerFactory(
-      () => GetLocation(
+      () => StartTracking(
+        serviceLocator(),
+      ),
+    )
+    ..registerFactory(
+      () => StopTracking(
         serviceLocator(),
       ),
     )
     // Blocs
     ..registerLazySingleton(
       () => LocationBloc(
-        getLocation: serviceLocator(),
+        startTracking: serviceLocator(),
+        stopTracking: serviceLocator(),
       ),
     );
 }

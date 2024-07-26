@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:rent_n_trace/core/common/entities/user.dart';
-import 'package:rent_n_trace/core/error/exceptions.dart';
 import 'package:rent_n_trace/core/error/failures.dart';
 import 'package:rent_n_trace/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:rent_n_trace/features/auth/domain/repository/auth_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -39,6 +39,8 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.loginWithGoogle();
 
       return right(null);
+    } on supabase.AuthException catch (e) {
+      return left(Failure(e.message));
     } catch (e) {
       return left(Failure(e.toString()));
     }
@@ -66,8 +68,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final user = await fn();
 
       return right(user);
-    } on ServerException catch (e) {
+    } on supabase.AuthException catch (e) {
       return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 
@@ -77,8 +81,10 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.logout();
 
       return right(null);
-    } on ServerException catch (e) {
+    } on supabase.AuthException catch (e) {
       return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 }

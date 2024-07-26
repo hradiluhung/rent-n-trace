@@ -47,4 +47,15 @@ class CarRepositoryImpl implements CarRepository {
       return left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Car>> getCarByRentId(String id) async {
+    try {
+      final car = await carRemoteDataSource.getCarByRentId(id);
+
+      return right(car);
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }

@@ -1,9 +1,9 @@
-import 'package:rent_n_trace/features/tracking/domain/entities/location.dart';
+import 'package:rent_n_trace/features/tracking/domain/entities/real_time_location.dart';
 
-class LocationModel extends Location {
-  LocationModel({
+class RealTimeLocationModel extends RealTimeLocation {
+  RealTimeLocationModel({
     required super.id,
-    required super.isRealTime,
+    required super.isTracking,
     required super.rentId,
     super.latitude,
     super.longitude,
@@ -11,10 +11,10 @@ class LocationModel extends Location {
     super.updatedAt,
   });
 
-  factory LocationModel.fromJson(Map<String, dynamic> map) {
-    return LocationModel(
+  factory RealTimeLocationModel.fromJson(Map<String, dynamic> map) {
+    return RealTimeLocationModel(
       id: map['id'] as String,
-      isRealTime: map['is_real_time'] as bool,
+      isTracking: map['is_tracking'] as bool,
       rentId: map['rent_id'] as String,
       createdAt: map['created_at'] == null
           ? DateTime.now()
@@ -28,7 +28,7 @@ class LocationModel extends Location {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
       'id': id,
-      'is_real_time': isRealTime,
+      'is_tracking': isTracking,
       'rent_id': rentId,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
@@ -36,22 +36,22 @@ class LocationModel extends Location {
     return data;
   }
 
-  Location copyWith({
+  RealTimeLocation copyWith({
     String? id,
     DateTime? createdAt,
     DateTime? updatedAt,
     double? latitude,
     double? longitude,
-    bool? isRealTime,
+    bool? isTracking,
     String? rentId,
   }) {
-    return Location(
+    return RealTimeLocation(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
-      isRealTime: isRealTime ?? this.isRealTime,
+      isTracking: isTracking ?? this.isTracking,
       rentId: rentId ?? this.rentId,
     );
   }

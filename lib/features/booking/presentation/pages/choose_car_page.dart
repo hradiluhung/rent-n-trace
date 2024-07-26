@@ -7,7 +7,7 @@ import 'package:fpdart/fpdart.dart' as fpdart;
 import 'package:rent_n_trace/core/constants/choose_car_tabs.dart';
 import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
-import 'package:rent_n_trace/core/utils/show_toast.dart';
+import 'package:rent_n_trace/core/utils/toast.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/car.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/car/car_bloc.dart';
@@ -31,7 +31,7 @@ class _ChooseCarPageState extends State<ChooseCarPage> {
 
   @override
   void initState() {
-    context.read<CarBloc>().add(CarGetAllAvailabilityCars(
+    context.read<CarBloc>().add(GetAllAvailabilityCarsEvent(
           startDatetime: widget.rent.startDateTime,
           endDatetime: widget.rent.endDateTime,
         ));
@@ -109,7 +109,6 @@ class _ChooseCarPageState extends State<ChooseCarPage> {
                   showToast(
                     context: context,
                     message: "Pilih kendaraan terlebih dahulu",
-                    icon: EvaIcons.alertCircleOutline,
                     status: WidgetStatus.error,
                   );
                   return;
@@ -260,7 +259,11 @@ class _CarListState extends State<CarList> {
   Widget build(BuildContext context) {
     return BlocConsumer<CarBloc, CarState>(listener: (context, state) {
       if (state is CarFailure) {
-        showToast(context: context, message: state.message);
+        showToast(
+          context: context,
+          message: state.message,
+          status: WidgetStatus.error,
+        );
       }
     }, builder: (context, state) {
       if (state is CarLoading) {

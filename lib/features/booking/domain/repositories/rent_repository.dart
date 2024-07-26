@@ -23,4 +23,6 @@ abstract interface class RentRepository {
   Future<Either<Failure, String>> updateCancelRent(String rentId);
 
   Future<Either<Failure, List<Rent>>> getAllUserRents(String userId);
+
+  Future<Either<Failure, Rent>> getRentById(String rentId);
 }

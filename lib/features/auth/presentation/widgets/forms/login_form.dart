@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
 import 'package:rent_n_trace/core/common/widgets/inputs/form_input_field.dart';
-import 'package:rent_n_trace/core/utils/validators.dart';
+import 'package:rent_n_trace/core/utils/form_validator.dart';
 import 'package:rent_n_trace/features/auth/presentation/bloc/auth_bloc.dart';
 
 class LoginForm extends StatefulWidget {
@@ -35,7 +35,7 @@ class _LoginFormState extends State<LoginForm> {
           FormInputField(
             controller: _emailTextController,
             hintText: "johndoe@gmail.com",
-            labelText: "Email/Username",
+            labelText: "Email",
             prefixIcon: EvaIcons.emailOutline,
             isRequired: true,
             keyboardType: TextInputType.emailAddress,
@@ -53,19 +53,27 @@ class _LoginFormState extends State<LoginForm> {
             textInputAction: TextInputAction.done,
           ),
           SizedBox(height: 16.h),
-          PrimaryButton(
-            text: "Masuk",
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                context.read<AuthBloc>().add(
-                      AuthLogin(
-                        email: _emailTextController.text.trim(),
-                        password: _passwordTextController.text.trim(),
-                      ),
-                    );
-              }
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final isLoading = state is AuthLoading;
+
+              return PrimaryButton(
+                text: "Masuk",
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<AuthBloc>().add(
+                          AuthLogin(
+                            email: _emailTextController.text.trim(),
+                            password: _passwordTextController.text.trim(),
+                          ),
+                        );
+                  }
+                },
+                isLoading: isLoading,
+                isDisabled: isLoading,
+                isFullWidth: true,
+              );
             },
-            isFullWidth: true,
           ),
         ],
       ),

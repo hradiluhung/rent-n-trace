@@ -1,19 +1,19 @@
-class Location {
+class RealTimeLocation {
   final String id;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final double? latitude;
   final double? longitude;
-  final bool isRealTime;
+  final bool isTracking;
   final String rentId;
 
-  Location({
+  RealTimeLocation({
     required this.id,
     this.createdAt,
     this.updatedAt,
     this.latitude,
     this.longitude,
-    required this.isRealTime,
+    required this.isTracking,
     required this.rentId,
   });
 }

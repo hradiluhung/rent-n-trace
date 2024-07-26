@@ -14,4 +14,6 @@ abstract interface class CarRepository {
   });
 
   Future<Either<Failure, List<Car>>> getAllCars();
+
+  Future<Either<Failure, Car>> getCarByRentId(String id);
 }

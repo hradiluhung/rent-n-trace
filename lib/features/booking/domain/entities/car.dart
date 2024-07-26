@@ -14,4 +14,16 @@ class Car {
     required this.status,
     this.images = const [],
   });
+
+  // toJson
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'fuelConsumption': fuelConsumption,
+      'fuelType': fuelType,
+      'status': status,
+      'images': images,
+    };
+  }
 }

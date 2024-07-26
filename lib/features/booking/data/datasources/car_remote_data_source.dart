@@ -14,6 +14,8 @@ abstract interface class CarRemoteDataSource {
     required DateTime startDate,
     required DateTime endDate,
   });
+
+  Future<CarModel> getCarByRentId(String rentId);
 }
 
 class CarRemoteDataSourceImpl implements CarRemoteDataSource {
@@ -32,10 +34,8 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
           .or('and(start_datetime.gte.$startDate, start_datetime.lte.$endDate), and(end_datetime.gte.$startDate, end_datetime.lte.$endDate)')
           .eq('status', 'approved');
 
-      final cars = await supabaseClient
-          .from('cars')
-          .select('*')
-          .not('id', 'in', rents.map((rent) => rent['car_id']).toList());
+      final cars =
+          await supabaseClient.from('cars').select('*').not('id', 'in', rents.map((rent) => rent['car_id']).toList());
 
       return cars.map((car) => CarModel.fromJson(car)).toList();
     } catch (e) {
@@ -72,6 +72,19 @@ class CarRemoteDataSourceImpl implements CarRemoteDataSource {
       final cars = await supabaseClient.from('cars').select('*');
 
       return cars.map((car) => CarModel.fromJson(car)).toList();
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<CarModel> getCarByRentId(String rentId) async {
+    try {
+      final rent = await supabaseClient.from('rents').select('car_id').eq('id', rentId);
+
+      final car = await supabaseClient.from('cars').select('*').eq('id', rent[0]['car_id']);
+
+      return CarModel.fromJson(car[0]);
     } catch (e) {
       throw ServerException(e.toString());
     }

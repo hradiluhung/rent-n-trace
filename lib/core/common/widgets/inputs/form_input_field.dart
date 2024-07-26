@@ -13,6 +13,7 @@ class FormInputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
   final bool isRequired;
+  final bool isDisabled;
 
   const FormInputField({
     super.key,
@@ -25,6 +26,7 @@ class FormInputField extends StatelessWidget {
     this.validator,
     this.keyboardType = TextInputType.text,
     this.isRequired = false,
+    this.isDisabled = false,
   });
 
   String? _defaultValidator(String? value) {
@@ -47,6 +49,10 @@ class FormInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle enabledTextStyle = Theme.of(context).textTheme.bodyMedium!;
+    final TextStyle disabledTextStyle =
+        enabledTextStyle.copyWith(color: AppPalette.greyColor.withOpacity(0.4));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -63,15 +69,18 @@ class FormInputField extends StatelessWidget {
             prefixIcon: prefixIcon != null
                 ? Icon(
                     prefixIcon,
-                    color: AppPalette.bodyTextColor,
+                    color: isDisabled
+                        ? AppPalette.greyColor.withOpacity(0.4)
+                        : AppPalette.bodyTextColor,
                   )
                 : null,
           ),
+          enabled: !isDisabled,
           validator: _combinedValidator,
           obscureText: isObscureText,
           textInputAction: textInputAction,
           keyboardType: keyboardType,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: isDisabled ? disabledTextStyle : enabledTextStyle,
         ),
       ],
     );

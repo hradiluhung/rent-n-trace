@@ -43,85 +43,90 @@ class _HistoryPageState extends State<HistoryPage> {
             final approvedRents = groupedRents["approved"];
             final nonApprovedRents = groupedRents["nonApproved"];
 
-            return Padding(
-              padding: EdgeInsets.all(16.r),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (approvedRents != null && approvedRents.isNotEmpty) ...[
-                    Text(
-                      "Peminjaman Mendatang",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    SizedBox(height: 8.h),
-                    for (var rent in approvedRents["approved"]!)
-                      Column(
-                        children: [
-                          RentCard(
-                            rent: rent,
-                            onClick: () => {
-                              Navigator.push(
-                                  context, DetailRentPage.route(rent)),
-                            },
+            return Scrollbar(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (approvedRents != null &&
+                          approvedRents.isNotEmpty) ...[
+                        Text(
+                          "Peminjaman Mendatang",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        SizedBox(height: 8.h),
+                        for (var rent in approvedRents["approved"]!)
+                          Column(
+                            children: [
+                              RentCard(
+                                rent: rent,
+                                onClick: () => {
+                                  Navigator.push(
+                                      context, DetailRentPage.route(rent)),
+                                },
+                              ),
+                              SizedBox(height: 8.h),
+                            ],
                           ),
-                          SizedBox(height: 8.h),
-                        ],
-                      ),
-                    SizedBox(height: 16.h)
-                  ],
-                  if (nonApprovedRents != null &&
-                      nonApprovedRents.isNotEmpty) ...[
-                    Text(
-                      "Peminjaman Lampau",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    SizedBox(height: 8.h),
-                    for (var month in nonApprovedRents.keys)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            month,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(
-                                  fontSize: 14.sp,
+                        SizedBox(height: 16.h)
+                      ],
+                      if (nonApprovedRents != null &&
+                          nonApprovedRents.isNotEmpty) ...[
+                        Text(
+                          "Peminjaman Lampau",
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        SizedBox(height: 8.h),
+                        for (var month in nonApprovedRents.keys)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                month,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontSize: 14.sp,
+                                    ),
+                              ),
+                              for (var rent in nonApprovedRents[month]!)
+                                Column(
+                                  children: [
+                                    RentCard(
+                                      rent: rent,
+                                      onClick: () => {
+                                        Navigator.push(context,
+                                            DetailRentPage.route(rent)),
+                                      },
+                                    ),
+                                    SizedBox(height: 8.h),
+                                  ],
                                 ),
+                            ],
                           ),
-                          for (var rent in nonApprovedRents[month]!)
-                            Column(
-                              children: [
-                                RentCard(
-                                  rent: rent,
-                                  onClick: () => {
-                                    Navigator.push(
-                                        context, DetailRentPage.route(rent)),
-                                  },
-                                ),
-                                SizedBox(height: 8.h),
-                              ],
-                            ),
-                        ],
-                      ),
-                  ],
-                  // If there is no rent
-                  if (approvedRents == null ||
-                      approvedRents.isEmpty && nonApprovedRents == null ||
-                      nonApprovedRents!.isEmpty)
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 16.h),
-                          Text(
-                            "Tidak ada riwayat peminjaman",
-                            style: Theme.of(context).textTheme.bodyMedium,
+                      ],
+                      // If there is no rent
+                      if (approvedRents == null ||
+                          approvedRents.isEmpty && nonApprovedRents == null ||
+                          nonApprovedRents!.isEmpty)
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 16.h),
+                              Text(
+                                "Tidak ada riwayat peminjaman",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                ],
+                        ),
+                    ],
+                  ),
+                ),
               ),
             );
           }

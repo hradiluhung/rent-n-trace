@@ -3,34 +3,34 @@ part of 'car_bloc.dart';
 @immutable
 sealed class CarEvent {}
 
-class CarGetAvailableCars extends CarEvent {
+class GetAvailableCarsEvent extends CarEvent {
   final DateTime startDatetime;
   final DateTime endDatetime;
 
-  CarGetAvailableCars({
+  GetAvailableCarsEvent({
     required this.startDatetime,
     required this.endDatetime,
   });
 }
 
-class CarGetNotAvailableCars extends CarEvent {
+class GetNotAvailableCarsEvent extends CarEvent {
   final DateTime startDatetime;
   final DateTime endDatetime;
 
-  CarGetNotAvailableCars({
+  GetNotAvailableCarsEvent({
     required this.startDatetime,
     required this.endDatetime,
   });
 }
 
-class CarGetAllAvailabilityCars extends CarEvent {
+class GetAllAvailabilityCarsEvent extends CarEvent {
   final DateTime startDatetime;
   final DateTime endDatetime;
 
-  CarGetAllAvailabilityCars({
+  GetAllAvailabilityCarsEvent({
     required this.startDatetime,
     required this.endDatetime,
   });
 }
 
-class CarGetAllCars extends CarEvent {}
+class GetAllCarsEvent extends CarEvent {}

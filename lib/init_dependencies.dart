@@ -25,17 +25,25 @@ import 'package:rent_n_trace/features/booking/domain/usecases/cars/get_not_avail
 import 'package:rent_n_trace/features/booking/domain/usecases/drivers/get_available_drivers.dart';
 import 'package:rent_n_trace/features/booking/domain/usecases/rents/create_rent.dart';
 import 'package:rent_n_trace/features/booking/domain/usecases/rents/get_all_user_rents.dart';
-import 'package:rent_n_trace/features/booking/domain/usecases/rents/get_latest_rent.dart';
 import 'package:rent_n_trace/features/booking/domain/usecases/rents/get_current_month_rents.dart';
+import 'package:rent_n_trace/features/booking/domain/usecases/rents/get_latest_rent.dart';
 import 'package:rent_n_trace/features/booking/domain/usecases/rents/update_cancel_rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/car/car_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/driver/driver_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/rent/rent_bloc.dart';
+import 'package:rent_n_trace/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:rent_n_trace/features/profile/data/respositories/profile_repository_impl.dart';
+import 'package:rent_n_trace/features/profile/domain/repositories/profile_repository.dart';
+import 'package:rent_n_trace/features/profile/domain/usecases/update_user_profile.dart';
+import 'package:rent_n_trace/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:rent_n_trace/features/tracking/data/datasources/location_remote_datasource.dart';
 import 'package:rent_n_trace/features/tracking/data/repositories/location_repository_impl.dart';
 import 'package:rent_n_trace/features/tracking/domain/repositories/location_repository.dart';
-import 'package:rent_n_trace/features/tracking/domain/usecases/get_location.dart';
+import 'package:rent_n_trace/features/tracking/domain/usecases/get_rent_by_id.dart';
+import 'package:rent_n_trace/features/tracking/domain/usecases/start_tracking.dart';
+import 'package:rent_n_trace/features/tracking/domain/usecases/stop_tracking.dart';
 import 'package:rent_n_trace/features/tracking/presentation/bloc/location/location_bloc.dart';
+import 'package:rent_n_trace/features/tracking/presentation/bloc/rent/tracking_rent_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'init_dependencies.main.dart';

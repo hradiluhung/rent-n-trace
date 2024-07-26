@@ -13,6 +13,8 @@ abstract interface class RentRemoteDataSource {
   Future<String> updateCancelRent(String rentId);
 
   Future<List<RentModel>> getAllUserRents(String userId);
+
+  Future<RentModel> getRentById(String rentId);
 }
 
 class RentRemoteDataSourceImpl implements RentRemoteDataSource {
@@ -27,8 +29,7 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
     try {
       final now = DateTime.now();
       final startOfMonth = DateTime(now.year, now.month, 1);
-      final endOfMonth = DateTime(now.year, now.month + 1, 1)
-          .subtract(const Duration(days: 1));
+      final endOfMonth = DateTime(now.year, now.month + 1, 1).subtract(const Duration(days: 1));
 
       final rents = await supabaseClient
           .from('rents')
@@ -66,11 +67,7 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
 
       String? driverName;
       if (rent.first['driver_id'] != null) {
-        final driver = await supabaseClient
-            .from('drivers')
-            .select('name')
-            .eq('id', rent.first['driver_id'])
-            .single();
+        final driver = await supabaseClient.from('drivers').select('name').eq('id', rent.first['driver_id']).single();
         driverName = driver['name'];
       }
 
@@ -87,14 +84,18 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
   @override
   Future<RentModel> createRent(RentModel rent) async {
     try {
-      final activeRents = await supabaseClient.from('rents').select('*').or(
-          'status.eq.${RentStatus.approved}, status.eq.${RentStatus.tracked}');
+      final activeRents = await supabaseClient
+          .from('rents')
+          .select('*')
+          .or('status.eq.${RentStatus.approved}, status.eq.${RentStatus.tracked}');
       if (activeRents.isNotEmpty) {
         throw const ServerException('Terdapat sewa yang masih aktif');
       }
 
-      final rentData =
-          await supabaseClient.from('rents').insert(rent.toJson()).select();
+      final rentData = await supabaseClient.from('rents').insert(rent.toJson()).select();
+
+      // update car status
+      await supabaseClient.from('cars').update({'status': CarStatus.booked}).eq('id', rent.carId!);
 
       return RentModel.fromJson(rentData.first);
     } catch (e) {
@@ -120,16 +121,38 @@ class RentRemoteDataSourceImpl implements RentRemoteDataSource {
   @override
   Future<List<RentModel>> getAllUserRents(String userId) async {
     try {
-      final rents = await supabaseClient
-          .from('rents')
-          .select('*, cars (name, images)')
-          .eq('user_id', userId);
+      final rents = await supabaseClient.from('rents').select('*, cars (name, images)').eq('user_id', userId);
 
       return rents
-          .map((rent) => RentModel.fromJson(rent).copyWith(
-              carName: rent['cars']['name'],
-              carImage: rent['cars']['images'][0]))
+          .map((rent) =>
+              RentModel.fromJson(rent).copyWith(carName: rent['cars']['name'], carImage: rent['cars']['images'][0]))
           .toList();
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<RentModel> getRentById(String rentId) async {
+    try {
+      final rent = await supabaseClient
+          .from('rents')
+          .select('*, cars (name, images, fuel_consumption)')
+          .eq('id', rentId)
+          .single();
+
+      String? driverName;
+      if (rent['driver_id'] != null) {
+        final driver = await supabaseClient.from('drivers').select('name').eq('id', rent['driver_id']).single();
+        driverName = driver['name'];
+      }
+
+      return RentModel.fromJson(rent).copyWith(
+        carName: rent['cars']['name'],
+        carImage: rent['cars']['images'][0],
+        fuelConsumption: rent['cars']['fuel_consumption'],
+        driverName: driverName,
+      );
     } catch (e) {
       throw ServerException(e.toString());
     }

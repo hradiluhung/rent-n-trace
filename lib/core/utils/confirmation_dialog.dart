@@ -11,6 +11,7 @@ class ConfirmationDialog extends StatelessWidget {
   final Function onConfirm;
   final Function onDismiss;
   final int confirmStatus;
+  final bool isLoading;
 
   const ConfirmationDialog({
     super.key,
@@ -21,14 +22,14 @@ class ConfirmationDialog extends StatelessWidget {
     required this.onConfirm,
     required this.onDismiss,
     this.confirmStatus = WidgetStatus.normal,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title:
-          Text('Konfirmasi', style: Theme.of(context).textTheme.headlineMedium),
-      content: const Text('Apakah anda yakin ingin membatalkan booking ini?'),
+      title: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+      content: Text(content),
       actions: [
         SecondaryButton(
           onPressed: () {
@@ -44,6 +45,8 @@ class ConfirmationDialog extends StatelessWidget {
           text: 'Ya',
           widgetSize: WidgetSizes.small,
           widgetStatus: confirmStatus,
+          isDisabled: isLoading,
+          isLoading: isLoading,
         ),
       ],
     );

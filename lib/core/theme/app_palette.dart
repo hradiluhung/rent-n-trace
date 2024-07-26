@@ -20,6 +20,7 @@ class AppPalette {
   static const Color hintTextColor = Color(0x516C849D);
   static const Color errorColor = Color(0xFFFF5252);
   static const Color errorColor2 = Color(0xFFDE4040);
+  static const Color warningColor = Color(0xFFC65C10);
   static const Color errorSurfaceColor = Color(0xFFFFE3E3);
   static const Color transparentColor = Color(0x00000000);
   static const Color halfTransparentColor = Color(0x7E000000);
@@ -34,4 +35,12 @@ class AppPalette {
   static const Color trackedColor = Color(0xFF2DCCFF);
   static const Color doneColor = primaryColor3;
   static const Color cancelledColor = Color(0xFFA4ABB6);
+}
+
+class AppBoxShadow {
+  static final myBoxShadow = BoxShadow(
+    color: AppPalette.greyColor.withOpacity(0.2),
+    blurRadius: 15,
+    offset: const Offset(0, 2),
+  );
 }

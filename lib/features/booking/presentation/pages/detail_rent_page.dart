@@ -1,20 +1,19 @@
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rent_n_trace/core/common/widgets/loader.dart';
 import 'package:rent_n_trace/core/common/widgets/buttons/custom_back_button.dart';
+import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
+import 'package:rent_n_trace/core/common/widgets/loader.dart';
 import 'package:rent_n_trace/core/constants/status_constants.dart';
 import 'package:rent_n_trace/core/constants/widget_contants.dart';
 import 'package:rent_n_trace/core/extensions/date_time_extension.dart';
 import 'package:rent_n_trace/core/theme/app_palette.dart';
-import 'package:rent_n_trace/core/utils/show_toast.dart';
+import 'package:rent_n_trace/core/utils/toast.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/booking/presentation/bloc/rent/rent_bloc.dart';
 import 'package:rent_n_trace/features/booking/presentation/pages/home_page.dart';
-import 'package:rent_n_trace/core/common/widgets/buttons/secondary_button.dart';
-import 'package:rent_n_trace/features/booking/presentation/widgets/dialogs/confirmation_dialog.dart';
+import 'package:rent_n_trace/core/utils/confirmation_dialog.dart';
 
 class DetailRentPage extends StatefulWidget {
   static route(Rent rent) =>
@@ -39,7 +38,7 @@ class _DetailRentPageState extends State<DetailRentPage> {
         onConfirm: () {
           context
               .read<RentBloc>()
-              .add(RentUpdateCancelRent(rentId: widget.rent.id));
+              .add(RentUpdateCancelRent(rentId: widget.rent.id!));
           Navigator.pop(context);
         },
         onDismiss: () {
@@ -61,7 +60,6 @@ class _DetailRentPageState extends State<DetailRentPage> {
               showToast(
                 context: context,
                 message: state.message,
-                icon: EvaIcons.checkmark,
                 status: WidgetStatus.success,
               );
 
@@ -75,7 +73,6 @@ class _DetailRentPageState extends State<DetailRentPage> {
               showToast(
                 context: context,
                 message: state.message,
-                icon: EvaIcons.close,
                 status: WidgetStatus.error,
               );
             }

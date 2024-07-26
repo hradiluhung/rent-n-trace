@@ -38,6 +38,7 @@ class AppTheme {
       focusedBorder: _border(),
       errorBorder: _border(AppPalette.errorColor),
       filled: true,
+      disabledBorder: _border(AppPalette.greyColor.withOpacity(0.3)),
       fillColor: AppPalette.whiteColor,
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
@@ -82,8 +83,8 @@ class AppTheme {
       headlineSmall: TextStyle(
         color: AppPalette.darkHeadlineTextColor,
         fontFamily: "TASAOrbiterDisplay",
-        fontSize: 12.sp,
-        height: 18.sp / 12.sp,
+        fontSize: 14.sp,
+        height: 20.sp / 14.sp,
         fontWeight: FontWeight.w600,
       ),
       bodyLarge: TextStyle(

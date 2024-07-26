@@ -1,0 +1,11 @@
+{"configurations": [
+    {
+        "name": "Launch",
+        "type": "dart",
+        "request": "launch",
+        "args": [
+            "--dart-define", "PUBLIC_ACCESS_TOKEN=pk.eyJ1IjoiaHJhZGlsdWh1bmciLCJhIjoiY2x5aDNzeTJ6MDBrbzJtcXlsMnpvYW9nbyJ9.xXQ28hwP_CnHBCkrsyTYwQ"
+        ],
+    }
+]
+}

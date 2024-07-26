@@ -1,3 +1,24 @@
 {
-  "files.exclude": {}
+  "files.exclude": {
+    ".dart_tool": true,
+    ".flutter-plugins": true,
+    ".flutter-plugins-dependencies": true,
+    ".git": true,
+    ".gitignore": true,
+    ".idea": true,
+    ".metadata": true,
+    "analysis_options.yaml": true,
+    "build": true,
+    "devtools_options.yaml": true,
+    "ios": true,
+    "linux": true,
+    "macos": true,
+    "pubspec.lock": true,
+    "README.md": true,
+    "rent_n_trace.iml": true,
+    "test": true,
+    "web": true,
+    "windows": true,
+    "android-temp": true,
+  }
 }

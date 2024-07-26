@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
 import 'package:rent_n_trace/core/common/widgets/inputs/form_input_field.dart';
 import 'package:rent_n_trace/core/extensions/string_extension.dart';
-import 'package:rent_n_trace/core/utils/validators.dart';
+import 'package:rent_n_trace/core/utils/form_validator.dart';
 import 'package:rent_n_trace/features/auth/presentation/bloc/auth_bloc.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -64,21 +64,30 @@ class _SignUpFormState extends State<SignUpForm> {
             isRequired: true,
           ),
           SizedBox(height: 16.h),
-          PrimaryButton(
-            text: "Daftar",
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                context.read<AuthBloc>().add(
-                      AuthSignUp(
-                        email: emailTextController.text.trim(),
-                        fullName:
-                            fullNameTextController.text.trim().toTitleCase(),
-                        password: passwordTextController.text.trim(),
-                      ),
-                    );
-              }
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final isLoading = state is AuthLoading;
+
+              return PrimaryButton(
+                text: "Daftar",
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    context.read<AuthBloc>().add(
+                          AuthSignUp(
+                            email: emailTextController.text.trim(),
+                            fullName: fullNameTextController.text
+                                .trim()
+                                .toTitleCase(),
+                            password: passwordTextController.text.trim(),
+                          ),
+                        );
+                  }
+                },
+                isLoading: isLoading,
+                isDisabled: isLoading,
+                isFullWidth: true,
+              );
             },
-            isFullWidth: true,
           ),
         ],
       ),

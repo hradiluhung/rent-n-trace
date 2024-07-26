@@ -7,8 +7,11 @@ import 'package:rent_n_trace/features/booking/presentation/pages/home_page.dart'
 import 'package:rent_n_trace/features/profile/presentation/pages/profile_page.dart';
 
 class UserLayout extends StatefulWidget {
-  static route() => MaterialPageRoute(builder: (context) => const UserLayout());
-  const UserLayout({super.key});
+  static route({int? defaultIndex}) => MaterialPageRoute(
+      builder: (context) => UserLayout(defaultIndex: defaultIndex));
+
+  final int? defaultIndex;
+  const UserLayout({super.key, this.defaultIndex});
 
   @override
   State<UserLayout> createState() => _UserLayoutState();
@@ -32,6 +35,15 @@ class _UserLayoutState extends State<UserLayout> {
   final Color _shadowColor = AppPalette.greyColor.withOpacity(0.3);
   final Color _bgColor = AppPalette.whiteColor;
 
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.defaultIndex != null) {
+      _selectedIndex = widget.defaultIndex!;
+    }
+  }
+
   final List<Widget> _pages = [
     const HomePage(),
     const ProfilePage(),
@@ -46,36 +58,39 @@ class _UserLayoutState extends State<UserLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        Padding(
-          padding: EdgeInsets.only(bottom: 60.h),
-          child: IndexedStack(
-            index: _selectedIndex,
-            children: _pages,
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 48.h),
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: _pages,
+            ),
           ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: BottomBarInspiredFancy(
-            items: items,
-            backgroundColor: _bgColor,
-            enableShadow: true,
-            boxShadow: [
-              BoxShadow(
-                color: _shadowColor,
-                blurRadius: 15,
-                offset: const Offset(0, 2),
-                spreadRadius: 1,
-              ),
-            ],
-            color: _color,
-            colorSelected: _colorSelect,
-            indexSelected: _selectedIndex,
-            onTap: _onItemTapped,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: BottomBarInspiredFancy(
+              items: items,
+              backgroundColor: _bgColor,
+              bottom: 0.h,
+              top: 16.h,
+              enableShadow: true,
+              boxShadow: [
+                BoxShadow(
+                  color: _shadowColor,
+                  blurRadius: 15,
+                  offset: const Offset(0, 2),
+                  spreadRadius: 1,
+                ),
+              ],
+              color: _color,
+              colorSelected: _colorSelect,
+              indexSelected: _selectedIndex,
+              onTap: _onItemTapped,
+            ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }
