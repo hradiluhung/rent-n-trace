@@ -28,10 +28,14 @@ void _initTrackingCar() {
         serviceLocator(),
       ),
     )
+    ..registerFactory(() => UpdateFuelConsumption(
+          serviceLocator(),
+        ))
     // Bloc
     ..registerLazySingleton(
       () => TrackingRentBloc(
         getRentById: serviceLocator(),
+        updateFuelConsumption: serviceLocator(),
       ),
     );
 }

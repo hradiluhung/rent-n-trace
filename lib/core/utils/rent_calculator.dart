@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:rent_n_trace/features/booking/domain/entities/rent.dart';
 
 String calculateEstimatedFuelCost(List<Rent> rents) {
-  int totalFuelCost = 0;
+  double totalFuelCost = 0;
 
   for (var rent in rents) {
     if (rent.fuelConsumption != null) {

@@ -16,8 +16,7 @@ import 'package:rent_n_trace/core/common/widgets/buttons/primary_button.dart';
 import 'package:rent_n_trace/features/booking/presentation/widgets/cards/selectable_car_card.dart';
 
 class ChooseCarPage extends StatefulWidget {
-  static route(Rent rent) =>
-      MaterialPageRoute(builder: (context) => ChooseCarPage(rent: rent));
+  static route(Rent rent) => MaterialPageRoute(builder: (context) => ChooseCarPage(rent: rent));
 
   final Rent rent;
   const ChooseCarPage({super.key, required this.rent});
@@ -53,10 +52,7 @@ class _ChooseCarPageState extends State<ChooseCarPage> {
                     ),
               ),
               Text("Pilih Kendaraan",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontSize: 14.sp)),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 14.sp)),
             ],
           ),
         ),
@@ -200,8 +196,7 @@ class TabBar extends StatelessWidget {
       children: chooseCarTabList
           .mapWithIndex(
             (e, index) => Padding(
-              padding: EdgeInsets.only(
-                  right: index == chooseCarTabList.length - 1 ? 0 : 8.w),
+              padding: EdgeInsets.only(right: index == chooseCarTabList.length - 1 ? 0 : 8.w),
               child: InkWell(
                 onTap: () {
                   onSelectedTab(
@@ -216,16 +211,14 @@ class TabBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4.r),
                   ),
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                     child: Text(
                       e.name,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontSize: 14.sp,
-                            color:
-                                selectedTabIndex == chooseCarTabList.indexOf(e)
-                                    ? AppPalette.whiteColor
-                                    : AppPalette.bodyTextColor,
+                            color: selectedTabIndex == chooseCarTabList.indexOf(e)
+                                ? AppPalette.whiteColor
+                                : AppPalette.bodyTextColor,
                           ),
                     ),
                   ),

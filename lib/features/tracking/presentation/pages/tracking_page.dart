@@ -21,7 +21,8 @@ import 'package:rent_n_trace/features/tracking/presentation/bloc/location/locati
 import 'package:rent_n_trace/features/tracking/presentation/pages/tracking_result_page.dart';
 
 class TrackingPage extends StatefulWidget {
-  static route(String rentId) => MaterialPageRoute(builder: (context) => TrackingPage(rentId: rentId));
+  static route(String rentId) =>
+      MaterialPageRoute(builder: (context) => TrackingPage(rentId: rentId));
 
   final String rentId;
   const TrackingPage({super.key, required this.rentId});
@@ -96,7 +97,8 @@ class _TrackingPageState extends State<TrackingPage> {
 
         if (mounted) setState(() {});
 
-        final location = await gl.Geolocator.getCurrentPosition(desiredAccuracy: gl.LocationAccuracy.high);
+        final location =
+            await gl.Geolocator.getCurrentPosition(desiredAccuracy: gl.LocationAccuracy.high);
         mapboxMap?.flyTo(
           CameraOptions(
             center: Point(
@@ -111,7 +113,8 @@ class _TrackingPageState extends State<TrackingPage> {
             ?.create(
               PolylineAnnotationOptions(
                 geometry: LineString(
-                  coordinates: data.locations.map((e) => Position(e.longitude, e.latitude)).toList(),
+                  coordinates:
+                      data.locations.map((e) => Position(e.longitude, e.latitude)).toList(),
                 ),
                 lineColor: AppPalette.primaryColor2.value,
                 lineWidth: 4,
@@ -132,7 +135,8 @@ class _TrackingPageState extends State<TrackingPage> {
       polylineAnnotationManager = value;
     });
 
-    final location = await gl.Geolocator.getCurrentPosition(desiredAccuracy: gl.LocationAccuracy.high);
+    final location =
+        await gl.Geolocator.getCurrentPosition(desiredAccuracy: gl.LocationAccuracy.high);
 
     mapboxMap.flyTo(
       CameraOptions(

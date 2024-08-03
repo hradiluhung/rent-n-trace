@@ -19,3 +19,8 @@ final class TrackingRentGetSuccess extends TrackingRentState {
   final Rent rent;
   const TrackingRentGetSuccess(this.rent);
 }
+
+final class TrackingRentUpdateSuccess extends TrackingRentState {
+  final Rent rent;
+  const TrackingRentUpdateSuccess(this.rent);
+}

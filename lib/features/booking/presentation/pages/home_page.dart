@@ -113,11 +113,13 @@ class _HomePageState extends State<HomePage> {
                           estimatedFuelCost: calculateEstimatedFuelCost(rents),
                           mostRentedCar: getMostRentedCar(rents),
                           lastRentedDate: getLastRentedDate(rents),
-                          isRentActive:
-                              latestRent?.status == RentStatus.pending || latestRent?.status == RentStatus.approved,
+                          isRentActive: latestRent?.status == RentStatus.pending ||
+                              latestRent?.status == RentStatus.approved,
                         ),
                         SizedBox(height: 24.h),
-                        if (latestRent != null && latestRent.status != RentStatus.done && !_hideLatestRentCard) ...[
+                        if (latestRent != null &&
+                            latestRent.status != RentStatus.done &&
+                            !_hideLatestRentCard) ...[
                           LatestRentCard(
                               rent: latestRent,
                               onDismissed: () {
@@ -134,7 +136,9 @@ class _HomePageState extends State<HomePage> {
                         message: state.message,
                         onPressed: () {
                           final authData = context.read<AppUserCubit>().state as AppUserLoggedIn;
-                          context.read<RentBloc>().add(RentGetAllStatsRent(userId: authData.user.id));
+                          context
+                              .read<RentBloc>()
+                              .add(RentGetAllStatsRent(userId: authData.user.id));
                         });
                   }
 

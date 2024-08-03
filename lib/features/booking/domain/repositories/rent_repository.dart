@@ -25,4 +25,6 @@ abstract interface class RentRepository {
   Future<Either<Failure, List<Rent>>> getAllUserRents(String userId);
 
   Future<Either<Failure, Rent>> getRentById(String rentId);
+
+  Future<Either<Failure, Rent>> updateFuelConsumption(String rentId, int fuelConsumption);
 }

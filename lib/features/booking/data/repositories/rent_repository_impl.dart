@@ -95,4 +95,14 @@ class RentRepositoryImpl implements RentRepository {
       return Left(Failure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Rent>> updateFuelConsumption(String rentId, int fuelConsumption) async {
+    try {
+      final rent = await rentRemoteDataSource.updateFuelConsumption(rentId, fuelConsumption);
+      return Right(rent);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
 }

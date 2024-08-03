@@ -32,12 +32,18 @@ class TrackingHistoryModel extends TrackingHistory {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
       'id': id,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'positions': positions?.map((e) => "(${e.latitude}, ${e.longitude})").toList(),
+      'positions': positions?.map((e) => "${e.latitude}, ${e.longitude}").toList(),
       'rent_id': rentId,
       'distance': distance,
     };
+
+    if (createdAt != null) {
+      data['created_at'] = createdAt!.toIso8601String();
+    }
+
+    if (updatedAt != null) {
+      data['updated_at'] = updatedAt!.toIso8601String();
+    }
     return data;
   }
 

@@ -25,18 +25,13 @@ class RentModel extends Rent {
       id: map['id'] as String,
       userId: map['user_id'] as String,
       carId: map['car_id'] as String,
-      updatedAt: map['updated_at'] == null
-          ? DateTime.now()
-          : DateTime.parse(map['updated_at']),
+      updatedAt: map['updated_at'] == null ? DateTime.now() : DateTime.parse(map['updated_at']),
       startDateTime: DateTime.parse(map['start_datetime'] ?? ''),
-      endDateTime: map['end_datetime'] == null
-          ? DateTime.now()
-          : DateTime.parse(map['end_datetime']),
+      endDateTime:
+          map['end_datetime'] == null ? DateTime.now() : DateTime.parse(map['end_datetime']),
       destination: map['destination'] as String,
       fuelConsumption: map['fuel_consumption'],
-      createdAt: map['created_at'] == null
-          ? DateTime.now()
-          : DateTime.parse(map['created_at']),
+      createdAt: map['created_at'] == null ? DateTime.now() : DateTime.parse(map['created_at']),
       carName: map['car_name'] ?? '',
       driverId: map['driver_id'] ?? '',
       driverName: map['driver_name'] ?? '',

@@ -27,7 +27,8 @@ class LocationRepositoryImpl implements LocationRepository {
   }
 
   @override
-  Future<Either<Failure, String>> stopTracking({required String rentId, required List<LatLng> positions, required double distance}) async {
+  Future<Either<Failure, String>> stopTracking(
+      {required String rentId, required List<LatLng> positions, required double distance}) async {
     try {
       final trackingHistory = TrackingHistoryModel(
         id: const Uuid().v1(),
@@ -35,8 +36,8 @@ class LocationRepositoryImpl implements LocationRepository {
         rentId: rentId,
         distance: distance,
       );
-      final message =
-          await realTimeLocationRemoteDatasource.stopTracking(rentId: rentId, trackingHistory: trackingHistory);
+      final message = await realTimeLocationRemoteDatasource.stopTracking(
+          rentId: rentId, trackingHistory: trackingHistory);
 
       return Right(message);
     } catch (e) {

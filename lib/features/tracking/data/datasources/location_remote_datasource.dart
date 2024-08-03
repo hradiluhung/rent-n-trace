@@ -1,5 +1,6 @@
 import 'package:rent_n_trace/core/constants/status_constants.dart';
 import 'package:rent_n_trace/core/error/exceptions.dart';
+import 'package:rent_n_trace/core/utils/distance_calculator.dart';
 import 'package:rent_n_trace/features/tracking/data/models/tracking_history_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -28,7 +29,8 @@ class LocationRemoteDatasourceImpl implements LocationRemoteDatasource {
     required double longitude,
   }) async {
     try {
-      final rentResponse = await supabaseClient.from("rents").select("status").eq("id", rentId).single();
+      final rentResponse =
+          await supabaseClient.from("rents").select("status").eq("id", rentId).single();
 
       final rentStatus = rentResponse["status"];
 
@@ -63,6 +65,7 @@ class LocationRemoteDatasourceImpl implements LocationRemoteDatasource {
       await supabaseClient.from("rents").update(
         {
           "status": RentStatus.done,
+          "fuel_consumption": meterToKm(trackingHistory.distance!).toInt()
         },
       ).eq("id", rentId);
 

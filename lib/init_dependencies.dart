@@ -42,6 +42,7 @@ import 'package:rent_n_trace/features/tracking/domain/repositories/location_repo
 import 'package:rent_n_trace/features/tracking/domain/usecases/get_rent_by_id.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/start_tracking.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/stop_tracking.dart';
+import 'package:rent_n_trace/features/tracking/domain/usecases/update_fuel_consumption.dart';
 import 'package:rent_n_trace/features/tracking/presentation/bloc/location/location_bloc.dart';
 import 'package:rent_n_trace/features/tracking/presentation/bloc/rent/tracking_rent_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
