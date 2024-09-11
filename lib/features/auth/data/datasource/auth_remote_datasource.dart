@@ -85,9 +85,9 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
         message = e.message;
       }
 
-      print("AuthException: $message");
-
       return Left(Failure(message));
+    } on PostgrestException catch (e) {
+      return Left(Failure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -99,6 +99,8 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
       await sl<SupabaseClient>().auth.signOut();
       return const Right(null);
     } on AuthException catch (e) {
+      return Left(Failure(e.message));
+    } on PostgrestException catch (e) {
       return Left(Failure(e.message));
     } catch (e) {
       return Left(Failure(e.toString()));

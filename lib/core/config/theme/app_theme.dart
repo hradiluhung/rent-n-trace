@@ -4,14 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 
 class AppTheme {
-  // static _border([Color color = const Color(0xffd1d5db)]) => OutlineInputBorder(
-  //       borderSide: BorderSide(
-  //         color: color,
-  //         width: 1,
-  //       ),
-  //       borderRadius: BorderRadius.circular(16.r),
-  //     );
-
   static final appTheme = ThemeData(
     brightness: Brightness.light,
     textTheme: TextTheme(
@@ -52,25 +44,86 @@ class AppTheme {
       backgroundColor: AppColors.secondBackground,
       contentTextStyle: TextStyle(color: AppColors.foreground),
     ),
-    // inputDecorationTheme: InputDecorationTheme(
-    //   contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-    //   border: _border(),
-    //   enabledBorder: _border(),
-    //   focusedBorder: _border(),
-    //   errorBorder: _border(const Color(0xFFE57373)),
-    //   filled: true,
-    //   disabledBorder: _border(const Color(0xFFE0E0E0)),
-    //   fillColor: AppColors.background,
-    // ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppColors.primary,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         elevation: 0,
         textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100),
+          borderRadius: BorderRadius.circular(100.r),
+        ),
+        disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
+        disabledForegroundColor: AppColors.foreground.withOpacity(0.5),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      hintStyle: TextStyle(
+        fontSize: 14.sp,
+        color: AppColors.foreground.withOpacity(0.3),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: AppColors.border,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: AppColors.foreground.withOpacity(0.4),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: AppColors.error.withOpacity(0.3),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(
+          color: AppColors.error,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      fillColor: Colors.white70,
+      filled: true,
+    ),
+    dialogTheme: DialogTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      backgroundColor: AppColors.dialogBackground,
+    ),
+    bottomSheetTheme: const BottomSheetThemeData(
+      backgroundColor: AppColors.background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(25),
+          topRight: Radius.circular(25),
         ),
       ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (!states.contains(WidgetState.selected)) {
+          return AppColors.secondBackground;
+        }
+        return AppColors.primary;
+      }),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(4.r),
+      ),
+    ),
+    bottomAppBarTheme: const BottomAppBarTheme(
+      color: AppColors.background,
+      elevation: 10,
     ),
   );
 }

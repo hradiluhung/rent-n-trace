@@ -4,20 +4,22 @@ import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 enum ButtonVariant { defaultVariant, outline, ghost }
 
 class BasicAppButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String title;
   final Widget? content;
   final double? height;
   final double? width;
   final ButtonVariant variant;
+  final bool disabled;
 
   const BasicAppButton({
-    required this.onPressed,
+    this.onPressed,
     this.title = '',
     this.height,
     this.width,
     this.content,
     this.variant = ButtonVariant.defaultVariant,
+    this.disabled = false,
     super.key,
   });
 
@@ -25,7 +27,7 @@ class BasicAppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (variant == ButtonVariant.outline) {
       return OutlinedButton(
-        onPressed: onPressed,
+        onPressed: !disabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
           minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
         ),
@@ -37,7 +39,7 @@ class BasicAppButton extends StatelessWidget {
       );
     } else if (variant == ButtonVariant.ghost) {
       return TextButton(
-        onPressed: onPressed,
+        onPressed: !disabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
           minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
         ),
@@ -49,7 +51,7 @@ class BasicAppButton extends StatelessWidget {
       );
     } else {
       return ElevatedButton(
-        onPressed: onPressed,
+        onPressed: !disabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
           minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
         ),

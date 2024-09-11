@@ -7,12 +7,12 @@ import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/helpers/validator/validator.dart';
 import 'package:rent_n_trace/core/common/models/user_signin_req.dart';
-import 'package:rent_n_trace/core/common/widgets/appbar/basic_appbar.dart';
+import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_reactive_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/auth/domain/usecases/signin.dart';
-import 'package:rent_n_trace/features/home/presentation/pages/home_page.dart';
+import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({super.key});
@@ -39,7 +39,7 @@ class SignInPage extends StatelessWidget {
             }
 
             if (state is ButtonSuccess) {
-              AppNavigator.pushAndRemove(context, const HomePage());
+              AppNavigator.pushAndRemove(context, const LandingPage());
             }
           },
           child: SingleChildScrollView(

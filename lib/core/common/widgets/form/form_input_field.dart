@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 
 class FormInputField extends StatefulWidget {
   final TextEditingController controller;
@@ -9,12 +8,15 @@ class FormInputField extends StatefulWidget {
   final String? labelText;
   final bool obscureText;
   final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final int maxLines;
   final bool required;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
+  final bool readOnly;
 
   const FormInputField({
     super.key,
@@ -23,10 +25,14 @@ class FormInputField extends StatefulWidget {
     this.labelText,
     this.obscureText = false,
     this.prefixIcon,
+    this.suffixIcon,
+    this.maxLines = 1,
     this.required = false,
     this.validator,
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
+    this.readOnly = false,
+    
     this.focusNode,
     this.nextFocusNode,
   });
@@ -92,12 +98,9 @@ class _FormInputFieldState extends State<FormInputField> {
             }
           },
           validator: _combinedValidator,
+          readOnly: widget.readOnly,
           decoration: InputDecoration(
             hintText: widget.hintText,
-            hintStyle: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.foreground.withOpacity(0.3),
-            ),
             prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
             suffixIcon: widget.obscureText
                 ? IconButton(
@@ -110,38 +113,11 @@ class _FormInputFieldState extends State<FormInputField> {
                       });
                     },
                   )
-                : null,
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: AppColors.border,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: AppColors.primary,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: AppColors.error.withOpacity(0.3),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: AppColors.error,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            fillColor: Colors.white70,
-            filled: true,
+                : widget.suffixIcon != null
+                    ? Icon(widget.suffixIcon)
+                    : null,
           ),
+          maxLines: widget.maxLines,
           style: TextStyle(
             fontSize: 14.sp,
           ),

@@ -16,7 +16,7 @@ class SplashCubit extends Cubit<SplashState> {
         emit(SplashUnauthenticated());
       },
       (user) {
-        user != null ? emit(SplashAuthenticated()) : emit(SplashUnauthenticated());
+        user != null ? emit(SplashAuthenticated(user)) : emit(SplashUnauthenticated());
       },
     );
   }

@@ -6,7 +6,7 @@ import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/config/assets/app_json.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/auth/presentation/pages/welcome_page.dart';
-import 'package:rent_n_trace/features/home/presentation/pages/home_page.dart';
+import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/splash/presentation/bloc/splash_cubit.dart';
 import 'package:rent_n_trace/features/splash/presentation/bloc/splash_state.dart';
 
@@ -21,7 +21,7 @@ class SplashPage extends StatelessWidget {
           AppNavigator.pushReplacement(context, const WelcomePage());
         }
         if (state is SplashAuthenticated) {
-          AppNavigator.pushReplacement(context, const HomePage());
+          AppNavigator.pushReplacement(context, const LandingPage());
         }
       },
       child: Scaffold(

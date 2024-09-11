@@ -27,7 +27,7 @@ class UserModel extends User {
       fullName: map['full_name'] as String,
       username: map['username'] as String,
       email: map['email'] as String,
-      divisionName: map['divisions.name'] != null ? map['divisions.name'] as String : null,
+      divisionName: map['divisions']?['name'] as String?,
       photo: map['photo'] != null ? map['photo'] as String : null,
     );
   }

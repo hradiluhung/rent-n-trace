@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
-import 'package:rent_n_trace/core/common/widgets/appbar/basic_appbar.dart';
+import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
-import 'package:rent_n_trace/core/common/widgets/logo/logo.dart';
+import 'package:rent_n_trace/core/common/widgets/logo.dart';
 import 'package:rent_n_trace/core/config/assets/app_images.dart';
 import 'package:rent_n_trace/features/auth/presentation/pages/signin_page.dart';
 import 'package:rent_n_trace/features/auth/presentation/pages/signup_page.dart';

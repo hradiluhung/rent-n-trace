@@ -3,17 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
-import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 
 class BasicReactiveButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String title;
   final double? height;
   final Widget? content;
   final ButtonVariant variant;
 
   const BasicReactiveButton({
-    required this.onPressed,
+    this.onPressed,
     this.title = '',
     this.height,
     this.content,
@@ -26,11 +25,7 @@ class BasicReactiveButton extends StatelessWidget {
     return BlocBuilder<ButtonStateCubit, ButtonState>(
       builder: (context, state) {
         return state is ButtonLoading
-            ? _buildButton(
-                null,
-                const CircularProgressIndicator(
-                  color: AppColors.primary,
-                ))
+            ? _buildButton(null, const CircularProgressIndicator())
             : _buildButton(onPressed, content ?? Text(title, style: _textStyle()));
       },
     );

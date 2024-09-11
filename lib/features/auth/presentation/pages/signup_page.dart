@@ -4,7 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/helpers/validator/validator.dart';
 import 'package:rent_n_trace/core/common/models/user_creation_req.dart';
-import 'package:rent_n_trace/core/common/widgets/appbar/basic_appbar.dart';
+import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
