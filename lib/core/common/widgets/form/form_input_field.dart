@@ -17,6 +17,7 @@ class FormInputField extends StatefulWidget {
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
   final bool readOnly;
+  final String? name;
 
   const FormInputField({
     super.key,
@@ -32,7 +33,7 @@ class FormInputField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.readOnly = false,
-    
+    this.name,
     this.focusNode,
     this.nextFocusNode,
   });
@@ -52,7 +53,7 @@ class _FormInputFieldState extends State<FormInputField> {
 
   String? _defaultValidator(String? value) {
     if (widget.required && (value == null || value.isEmpty)) {
-      return '${widget.labelText} tidak boleh kosong';
+      return '${widget.name ?? widget.labelText} tidak boleh kosong';
     }
     return null;
   }

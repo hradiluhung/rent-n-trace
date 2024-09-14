@@ -9,8 +9,6 @@ class DisplayActiveLocationCubit extends Cubit<DisplayActiveLocationState> {
   void displayLocation(String rentId) async {
     final returnedData = await sl<GetActiveLocation>().call(params: rentId);
 
-    print("ReturnedData: $returnedData");
-
     returnedData.fold(
       (error) => emit(DisplayLocationFailed(error.message)),
       (data) => emit(DisplayLocationLoaded(data)),

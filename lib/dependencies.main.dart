@@ -8,8 +8,12 @@ Future<void> initializeDependencies() async {
     anonKey: AppSecrets.supabaseAnonKey,
   );
 
+  final config = Configuration.local([LatLng.schema, LocationTrackingRecord.schema]);
+  final realm = Realm(config);
+
   /* Core */
   sl.registerLazySingleton(() => supabase.client);
+  sl.registerLazySingleton(() => realm);
 
   /* Data sources */
   sl.registerSingleton<AuthRemoteDatasource>(AuthRemoteDatasourceImpl());
@@ -33,10 +37,14 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetCurrentUser>(GetCurrentUser());
 
   // Rent
-  sl.registerSingleton<GetCurrMonthRents>(GetCurrMonthRents());
   sl.registerSingleton<GetLatestRent>(GetLatestRent());
-  sl.registerSingleton<GetRentById>(GetRentById());
+  sl.registerSingleton<GetDetailRent>(GetDetailRent());
   sl.registerSingleton<CreateRent>(CreateRent());
+
+  // RentHistory
+  sl.registerSingleton<GetCurrMonthRentHistories>(GetCurrMonthRentHistories());
+  sl.registerSingleton<GetAllRentHistories>(GetAllRentHistories());
+  sl.registerSingleton<GetDetailRentHistory>(GetDetailRentHistory());
 
   // Car
   sl.registerSingleton<GetAllCars>(GetAllCars());
@@ -49,4 +57,7 @@ Future<void> initializeDependencies() async {
   // Location
   sl.registerSingleton<CreateInitialLocation>(CreateInitialLocation());
   sl.registerSingleton<GetActiveLocation>(GetActiveLocation());
+  sl.registerSingleton<UpdateActiveLocation>(UpdateActiveLocation());
+  sl.registerSingleton<StopActiveLocation>(StopActiveLocation());
+  sl.registerSingleton<UpdateFuelCost>(UpdateFuelCost());
 }

@@ -28,12 +28,12 @@ class AppTheme {
         color: AppColors.primary,
       ),
       headlineMedium: GoogleFonts.workSans(
-        fontSize: 16.sp,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.primary,
       ),
       headlineSmall: GoogleFonts.workSans(
-        fontSize: 12.sp,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.primary,
       ),

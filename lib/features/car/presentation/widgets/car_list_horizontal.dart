@@ -23,23 +23,23 @@ class CarListHorizontal extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.h),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 180.h, minHeight: 56.h),
-          child: ListView.builder(
-            shrinkWrap: true,
+        SizedBox(
+          height: 190.h,
+          child: ListView(
             scrollDirection: Axis.horizontal,
-            itemCount: cars.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? 16.w : 0,
-                  right: 16.w,
-                ),
-                child: CarCard(car: cars[index]),
-              );
-            },
+            children: cars
+                .map((car) => Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: cars.indexOf(car) == 0 ? 16.w : 0,
+                          right: 16.w,
+                        ),
+                        child: CarCard(car: car),
+                      ),
+                    ))
+                .toList(),
           ),
-        ),
+        )
       ],
     );
   }

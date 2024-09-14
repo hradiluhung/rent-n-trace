@@ -16,7 +16,7 @@ Future<void> checkPemission() async {
     await Permission.notification.request();
   }
 
-  bool locationDenied = await Permission.location.isDenied;
+  bool locationDenied = await Permission.locationAlways.isDenied;
   if (locationDenied) {
     await Permission.location.request();
   }

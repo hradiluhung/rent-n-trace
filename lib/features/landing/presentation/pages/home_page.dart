@@ -6,12 +6,14 @@ import 'package:rent_n_trace/core/common/constants/rent_status.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/logo.dart';
 import 'package:rent_n_trace/features/car/presentation/widgets/car_list_horizontal.dart';
-import 'package:rent_n_trace/features/landing/presentation/bloc/display_cars_cubit.dart';
-import 'package:rent_n_trace/features/landing/presentation/bloc/display_cars_state.dart';
+import 'package:rent_n_trace/features/landing/presentation/bloc/display_all_cars_cubit.dart';
+import 'package:rent_n_trace/features/landing/presentation/bloc/display_all_cars_state.dart';
 import 'package:rent_n_trace/features/landing/presentation/bloc/display_rent_stats_cubit.dart';
 import 'package:rent_n_trace/features/landing/presentation/bloc/display_rent_stats_state.dart';
 import 'package:rent_n_trace/features/landing/presentation/widgets/curr_month_rents_card.dart';
 import 'package:rent_n_trace/features/landing/presentation/widgets/latest_rent_card.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/splash_cubit.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/splash_state.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -31,17 +33,28 @@ class HomePage extends StatelessWidget {
           BlocProvider(
             create: (context) => DislayRentStatsCubit()..displayCurrentRents(),
           ),
-          BlocProvider(
-            create: (context) => DisplayCarsCubit()..displayCars(),
-          ),
         ],
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(vertical: 16.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              BlocBuilder<SplashCubit, SplashState>(
+                builder: (context, state) {
+                  final user = (state as SplashAuthenticated).user;
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Text(
+                      "Selamat datang kembali, ${user.fullName.split(" ").first}!",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 8.h),
               _stats(),
-              SizedBox(height: 24.h),
+              SizedBox(height: 16.h),
               _cars(),
             ],
           ),
@@ -86,7 +99,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _cars() {
-    return BlocBuilder<DisplayCarsCubit, DisplayCarsState>(
+    return BlocBuilder<DisplayAllCarsCubit, DisplayAllCarsState>(
       builder: (context, state) {
         if (state is DisplayCarsLoading) {
           // TODO: Replace with skeleton loader

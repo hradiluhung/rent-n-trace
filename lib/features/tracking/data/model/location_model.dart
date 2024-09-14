@@ -20,7 +20,7 @@ class LocationModel extends Location {
   factory LocationModel.fromMap(Map<String, dynamic> map) {
     return LocationModel(
       id: map['id'] as String,
-      rentId: map['rentId'] as String,
+      rentId: map['rent_id'] as String,
       lat: map['lat'] as double,
       long: map['long'] as double,
     );

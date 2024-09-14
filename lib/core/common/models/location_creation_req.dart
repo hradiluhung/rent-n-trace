@@ -1,5 +1,11 @@
 class LocationCreationReq{
   String? rentId;
-  String? lat;
-  String? long;
+  double? lat;
+  double? long;
+
+  LocationCreationReq({
+    this.rentId,
+    this.lat,
+    this.long,
+  });
 }

@@ -24,19 +24,23 @@ class RentDetailPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => DisplayDetailRentCubit()..displayDetailRent(id),
       child: Scaffold(
-        appBar: const BasicAppbar(
-          title: Text("Detail Peminjaman"),
+        appBar: BasicAppbar(
+          title: Text("Detail Peminjaman", style: Theme.of(context).textTheme.headlineMedium),
         ),
         bottomNavigationBar: BlocBuilder<DisplayDetailRentCubit, DisplayDetailRentState>(
           builder: (context, state) {
-            if (state is DisplayDetailRentLoaded && state.rent.status == RentStatus.approved) {
+            if (state is DisplayDetailRentLoaded &&
+                (state.rent.status == RentStatus.approved ||
+                    state.rent.status == RentStatus.tracked)) {
               return Container(
                 padding: EdgeInsets.all(16.r),
                 child: BasicAppButton(
                   onPressed: () {
                     AppNavigator.push(context, TrackingPage(rent: state.rent));
                   },
-                  title: "Mulai Perjalanan",
+                  title: state.rent.status == RentStatus.approved
+                      ? "Mulai Perjalanan"
+                      : "Lacak Lokasi",
                 ),
               );
             } else {
@@ -129,12 +133,11 @@ class RentDetailPage extends StatelessWidget {
             ),
             SizedBox(width: 16.w),
             Expanded(
-              // Wrap the Column with Expanded
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Mobile",
+                    "Mobil",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
                         ),

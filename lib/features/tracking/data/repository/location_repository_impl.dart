@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
+import 'package:rent_n_trace/core/common/models/fuel_cost_update_req.dart';
 import 'package:rent_n_trace/core/common/models/location_creation_req.dart';
+import 'package:rent_n_trace/core/common/models/stop_tracking_req.dart';
 import 'package:rent_n_trace/dependencies.dart';
 import 'package:rent_n_trace/features/tracking/data/datasource/location_remote_datasource.dart';
 import 'package:rent_n_trace/features/tracking/data/model/location_model.dart';
@@ -18,10 +20,8 @@ class LocationRepositoryImpl extends LocationRepository {
   }
 
   @override
-  Future<Either> stopActiveLocation(Location location) async {
-    return await sl<LocationRemoteDatasource>().stopActiveLocation(
-      LocationModel.fromEntity(location),
-    );
+  Future<Either> stopActiveLocation(StopTrackingReq trackingData) async {
+    return await sl<LocationRemoteDatasource>().stopActiveLocation(trackingData);
   }
 
   @override
@@ -29,5 +29,10 @@ class LocationRepositoryImpl extends LocationRepository {
     return await sl<LocationRemoteDatasource>().updateActiveLocation(
       LocationModel.fromEntity(location),
     );
+  }
+
+  @override
+  Future<Either> updateFuelCost(FuelCostUpdateReq rentHistory) async {
+    return await sl<LocationRemoteDatasource>().updateFuelCost(rentHistory);
   }
 }

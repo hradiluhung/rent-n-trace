@@ -8,15 +8,20 @@ import 'package:rent_n_trace/features/rent/data/models/rent_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class RentRemoteDatasource {
-  Future<Either> getCurrMonthRents();
+  // Rent
   Future<Either> getLatestRent();
-  Future<Either> getRentDetail(String id);
+  Future<Either> getDetailRent(String id);
   Future<Either> createRent(RentCreationReq rent);
+
+  // Rent History
+  Future<Either> getCurrMonthRentHistories();
+  Future<Either> getAllRentHistories();
+  Future<Either> getDetailRentHistory(String id);
 }
 
 class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
   @override
-  Future<Either> getCurrMonthRents() async {
+  Future<Either> getCurrMonthRentHistories() async {
     try {
       final startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
       final endDate = DateTime(DateTime.now().year, DateTime.now().month + 1, 1)
@@ -59,7 +64,7 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
   }
 
   @override
-  Future<Either> getRentDetail(String id) async {
+  Future<Either> getDetailRent(String id) async {
     try {
       final rent = await sl<SupabaseClient>()
           .from('rents')
@@ -98,6 +103,41 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
       return Left(Failure(e.message));
     } catch (e) {
       return const Left("Silakan coba lagi!");
+    }
+  }
+
+  @override
+  Future<Either> getAllRentHistories() async {
+    try {
+      final rentsHistories = await sl<SupabaseClient>()
+          .from('rent_histories')
+          .select('*, rents(*, cars (name, image), drivers(name, photo))');
+
+      return Right(rentsHistories.map((rh) => RentHistoryModel.fromMap(rh)).toList());
+    } on PostgrestException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either> getDetailRentHistory(String id) async {
+    try {
+      final rentHistory = await sl<SupabaseClient>()
+          .from('rent_histories')
+          .select('*, rents(*, cars (*), drivers(name, photo))')
+          .eq('id', id);
+
+      if (rentHistory.isEmpty) {
+        return Left(Failure('Peminjaman tidak ditemukan'));
+      }
+
+      return Right(RentHistoryModel.fromMap(rentHistory.first));
+    } on PostgrestException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return Left(Failure(e.toString()));
     }
   }
 }

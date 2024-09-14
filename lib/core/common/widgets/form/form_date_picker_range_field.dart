@@ -85,7 +85,6 @@ class _FormDatePickerRangeFieldState extends State<FormDatePickerRangeField> {
                   padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
                   child: BasicAppButton(
                     onPressed: () {
-                      print("Selected Range: $selectedRange");
                       widget.onDateSelected(selectedRange);
                       widget.controller.text = _rangeText;
                       Navigator.of(context).pop();

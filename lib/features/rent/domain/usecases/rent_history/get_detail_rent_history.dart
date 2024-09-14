@@ -3,9 +3,9 @@ import 'package:rent_n_trace/core/usecase/usecase.dart';
 import 'package:rent_n_trace/dependencies.dart';
 import 'package:rent_n_trace/features/rent/domain/repository/rent_repository.dart';
 
-class GetCurrMonthRents implements UseCase<Either, dynamic> {
+class GetDetailRentHistory extends UseCase<Either, String> {
   @override
-  Future<Either> call({params}) async {
-    return await sl<RentRepository>().getCurrMonthRents();
+  Future<Either> call({String? params}) async {
+    return await sl<RentRepository>().getDetailRentHistory(params!);
   }
 }

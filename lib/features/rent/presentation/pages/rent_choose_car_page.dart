@@ -12,7 +12,7 @@ import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/car/domain/entity/car.dart';
 import 'package:rent_n_trace/features/car/presentation/widgets/car_card.dart';
 import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
-import 'package:rent_n_trace/features/rent/domain/usecases/create_rent.dart';
+import 'package:rent_n_trace/features/rent/domain/usecases/rent/create_rent.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_cars_cubit.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_cars_state.dart';
 
