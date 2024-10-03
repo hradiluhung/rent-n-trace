@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rent_n_trace/core/config/theme/app_theme.dart';
 import 'package:rent_n_trace/core/services/background_service.dart';
 import 'package:rent_n_trace/dependencies.dart';
-import 'package:rent_n_trace/features/splash/presentation/bloc/splash_cubit.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
 import 'package:rent_n_trace/features/splash/presentation/pages/splash_page.dart';
 
 Future<void> checkPemission() async {
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       useInheritedMediaQuery: true,
       builder: (context, _) => BlocProvider(
-        create: (context) => SplashCubit()..init(),
+        create: (context) => UserCubit()..init(),
         child: MaterialApp(
           theme: AppTheme.appTheme,
           debugShowCheckedModeBanner: false,

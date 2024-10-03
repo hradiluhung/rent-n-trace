@@ -7,7 +7,15 @@ class AppAlert extends StatelessWidget {
   final IconData icon;
   final String message;
   final AppAlertVariant variant;
-  AppAlert({super.key, required this.icon, required this.message, required this.variant});
+  final Widget? actions;
+
+  AppAlert({
+    super.key,
+    required this.icon,
+    required this.message,
+    required this.variant,
+    this.actions,
+  });
 
   final color = {
     AppAlertVariant.info: Colors.blue,
@@ -25,17 +33,30 @@ class AppAlert extends StatelessWidget {
         border: Border.all(color: color[variant]!),
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          Icon(icon, color: color[variant]),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              "Mobil dibooking bisa tetap tersedia. Sesuaikan dengan tanggal peminjaman.",
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color[variant]),
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: color[variant]),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Text(
+                  message,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color[variant]),
+                ),
+              ),
+            ],
           ),
+          if (actions != null) ...[
+            SizedBox(height: 12.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                actions!,
+              ],
+            ),
+          ],
         ],
       ),
     );

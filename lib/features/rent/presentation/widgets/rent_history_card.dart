@@ -9,7 +9,6 @@ import 'package:rent_n_trace/features/rent/presentation/pages/rent_history_detai
 
 class RentHistoryCard extends StatelessWidget {
   final RentHistory rentHistory;
-
   const RentHistoryCard({super.key, required this.rentHistory});
 
   @override
@@ -27,51 +26,59 @@ class RentHistoryCard extends StatelessWidget {
           ),
           padding: EdgeInsets.all(16.r),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   if (rentHistory.carImage != null)
                     Image.network(
                       rentHistory.carImage!,
-                      width: 100.r,
+                      width: 80.r,
+                      fit: BoxFit.contain,
                     ),
-                  SizedBox(width: 8.w),
+                  SizedBox(width: 16.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           rentHistory.carName ?? "-",
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: AppColors.foreground,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                         SizedBox(height: 4.h),
                         Text(
                           "${rentHistory.rentStartDate!.toddMMMMyyyyShort()} - ${rentHistory.rentEndDate!.toddMMMMyyyyShort()}",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        SizedBox(height: 4.h),
-                        RichText(
-                          text: TextSpan(
-                            text: formatToRupiah(rentHistory.fuelCost),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall
-                                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 14.sp),
-                            children: [
-                              TextSpan(
-                                text: " - ${rentHistory.distance} KM",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(fontSize: 14.sp),
-                              ),
-                            ],
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: AppColors.secondForeground),
                         ),
                         SizedBox(height: 8.h),
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                                border: Border.all(color: AppColors.border, width: 0.5),
+                              ),
+                              child: Text(formatMtoKm(rentHistory.distance),
+                                  style: Theme.of(context).textTheme.bodySmall),
+                            ),
+                            SizedBox(width: 8.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                                border: Border.all(color: AppColors.border, width: 0.5),
+                              ),
+                              child: Text(formatToRupiah(rentHistory.fuelCost),
+                                  style: Theme.of(context).textTheme.bodySmall),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

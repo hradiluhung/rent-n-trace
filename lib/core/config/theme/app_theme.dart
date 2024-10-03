@@ -23,12 +23,12 @@ class AppTheme {
         color: AppColors.foreground,
       ),
       headlineLarge: GoogleFonts.workSans(
-        fontSize: 24.sp,
+        fontSize: 22.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.primary,
       ),
       headlineMedium: GoogleFonts.workSans(
-        fontSize: 18.sp,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.primary,
       ),
@@ -36,6 +36,21 @@ class AppTheme {
         fontSize: 14.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.primary,
+      ),
+      titleLarge: GoogleFonts.workSans(
+        fontSize: 22.sp,
+        fontWeight: FontWeight.w500,
+        color: AppColors.foreground,
+      ),
+      titleMedium: GoogleFonts.workSans(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w500,
+        color: AppColors.foreground,
+      ),
+      titleSmall: GoogleFonts.workSans(
+        fontSize: 14.sp,
+        fontWeight: FontWeight.w500,
+        color: AppColors.foreground,
       ),
     ),
     primaryColor: AppColors.primary,
@@ -46,6 +61,12 @@ class AppTheme {
     ),
     progressIndicatorTheme: const ProgressIndicatorThemeData(
       color: AppColors.primary,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        overlayColor: AppColors.foreground.withOpacity(0.05),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(

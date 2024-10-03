@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
+import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class BasicReactiveButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -22,12 +24,14 @@ class BasicReactiveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ButtonStateCubit, ButtonState>(
-      builder: (context, state) {
-        return state is ButtonLoading
-            ? _buildButton(null, const CircularProgressIndicator())
-            : _buildButton(onPressed, content ?? Text(title, style: _textStyle()));
-      },
+    return Skeleton.leaf(
+      child: BlocBuilder<ButtonStateCubit, ButtonState>(
+        builder: (context, state) {
+          return state is ButtonLoading
+              ? _buildButton(null, const CircularProgressIndicator())
+              : _buildButton(onPressed, content ?? Text(title, style: _textStyle(context)));
+        },
+      ),
     );
   }
 
@@ -52,7 +56,20 @@ class BasicReactiveButton extends StatelessWidget {
     return Container(height: height, alignment: Alignment.center, child: child);
   }
 
-  TextStyle _textStyle() {
-    return const TextStyle(color: Colors.white, fontWeight: FontWeight.w400);
+  TextStyle? _textStyle(BuildContext context) {
+    Color textColor;
+
+    switch (variant) {
+      case ButtonVariant.outline:
+        textColor = AppColors.foreground;
+        break;
+      case ButtonVariant.ghost:
+        textColor = AppColors.foreground;
+        break;
+      default:
+        textColor = Colors.white;
+    }
+
+    return Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor);
   }
 }

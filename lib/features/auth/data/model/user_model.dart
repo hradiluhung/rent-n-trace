@@ -6,6 +6,7 @@ class UserModel extends User {
     required super.fullName,
     required super.username,
     required super.email,
+    super.divisionId,
     super.divisionName,
     super.photo,
   });
@@ -16,6 +17,7 @@ class UserModel extends User {
       'fullName': fullName,
       'username': username,
       'email': email,
+      'divisonId': divisionId,
       'divisionName': divisionName,
       'photo': photo,
     };
@@ -27,6 +29,7 @@ class UserModel extends User {
       fullName: map['full_name'] as String,
       username: map['username'] as String,
       email: map['email'] as String,
+      divisionId: map['division_id'] as String?,
       divisionName: map['divisions']?['name'] as String?,
       photo: map['photo'] != null ? map['photo'] as String : null,
     );
@@ -37,6 +40,7 @@ class UserModel extends User {
     String? fullName,
     String? username,
     String? email,
+    String? divisionId,
     String? divisionName,
     String? photo,
   }) {
@@ -45,6 +49,7 @@ class UserModel extends User {
       fullName: fullName ?? this.fullName,
       username: username ?? this.username,
       email: email ?? this.email,
+      divisionId: divisionId ?? this.divisionId,
       divisionName: divisionName ?? this.divisionName,
       photo: photo ?? this.photo,
     );

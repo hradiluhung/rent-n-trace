@@ -6,6 +6,7 @@ abstract class RentRepository {
   Future<Either> getLatestRent();
   Future<Either> getDetailRent(String id);
   Future<Either> createRent(RentCreationReq rent);
+  Future<Either> cancelRent(String id);
 
   // Rent History
   Future<Either> getCurrMonthRentHistories();

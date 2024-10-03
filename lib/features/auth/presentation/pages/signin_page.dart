@@ -7,12 +7,15 @@ import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/helpers/validator/validator.dart';
 import 'package:rent_n_trace/core/common/models/user_signin_req.dart';
+import 'package:rent_n_trace/core/common/widgets/app_snackbar.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_reactive_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/features/auth/domain/entity/user.dart';
 import 'package:rent_n_trace/features/auth/domain/usecases/signin.dart';
-import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
+import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({super.key});
@@ -30,15 +33,12 @@ class SignInPage extends StatelessWidget {
         child: BlocListener<ButtonStateCubit, ButtonState>(
           listener: (context, state) {
             if (state is ButtonFailure) {
-              var snackbar = SnackBar(
-                content: Text(state.message, style: const TextStyle(color: Colors.white)),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: AppColors.error,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              AppSnackbar.show(context, state.message, AppSnackbarType.error);
             }
 
             if (state is ButtonSuccess) {
+              final user = state.data as User;
+              context.read<UserCubit>().updateAuthenticated(user);
               AppNavigator.pushAndRemove(context, const LandingPage());
             }
           },

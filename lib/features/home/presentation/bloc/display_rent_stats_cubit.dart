@@ -1,0 +1,41 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rent_n_trace/dependencies.dart';
+import 'package:rent_n_trace/features/home/presentation/bloc/display_rent_stats_state.dart';
+import 'package:rent_n_trace/features/rent/domain/usecases/rent/get_latest_rent.dart';
+import 'package:rent_n_trace/features/rent/domain/usecases/rent_history/get_curr_month_rent_histories.dart';
+
+class DislayRentStatsCubit extends Cubit<DislayRentStatsState> {
+  DislayRentStatsCubit() : super(DislayRentStatsLoading());
+
+  void displayCurrentRents() async {
+    final currentMonthRents = await sl<GetCurrMonthRentHistories>().call();
+    final latestRent = await sl<GetLatestRent>().call();
+
+    try {
+      currentMonthRents.fold(
+        (error) => emit(DislayRentStatsFailed(message: error.message)),
+        (currentMonthRents) {
+          latestRent.fold(
+            (error) => emit(DislayRentStatsFailed(message: error.message)),
+            (latestRent) => emit(
+              DislayRentStatsLoaded(currentMonthRents: currentMonthRents, latestRent: latestRent),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(DislayRentStatsFailed(message: e.toString()));
+    }
+  }
+
+  void updateLatestRentStatus(String status) {
+    if (state is DislayRentStatsLoaded) {
+      final currentRent = (state as DislayRentStatsLoaded).latestRent;
+      final updatedRent = currentRent?.copyWith(status: status);
+      emit(DislayRentStatsLoaded(
+        currentMonthRents: (state as DislayRentStatsLoaded).currentMonthRents,
+        latestRent: updatedRent,
+      ));
+    }
+  }
+}

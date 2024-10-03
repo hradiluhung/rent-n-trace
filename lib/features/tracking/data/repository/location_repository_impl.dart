@@ -32,7 +32,7 @@ class LocationRepositoryImpl extends LocationRepository {
   }
 
   @override
-  Future<Either> updateFuelCost(FuelCostUpdateReq rentHistory) async {
-    return await sl<LocationRemoteDatasource>().updateFuelCost(rentHistory);
+  Future<Either> updateFuelCost(FuelCostUpdateReq fuelCostUpdateReq) async {
+    return await sl<LocationRemoteDatasource>().updateFuelCost(fuelCostUpdateReq);
   }
 }

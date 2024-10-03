@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/models/date_range_req.dart';
 import 'package:rent_n_trace/core/common/models/rent_creation_req.dart';
+import 'package:rent_n_trace/core/common/widgets/app_alert.dart';
+import 'package:rent_n_trace/core/common/widgets/app_snackbar.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_reactive_button.dart';
+import 'package:rent_n_trace/core/config/assets/app_images.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/car/domain/entity/car.dart';
-import 'package:rent_n_trace/features/car/presentation/widgets/car_card.dart';
-import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
+import 'package:rent_n_trace/features/car/presentation/widgets/car_status_card.dart';
+import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/rent/domain/usecases/rent/create_rent.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_cars_cubit.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_cars_state.dart';
@@ -31,15 +35,12 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BasicAppbar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Pilih Mobil"),
-            Text(
-              "Hanya menampilkan mobil yang tersedia",
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+        title: Text(
+          "Pilih Mobil",
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20.sp,
+                color: AppColors.foreground,
+              ),
         ),
       ),
       bottomNavigationBar: BlocProvider(
@@ -49,20 +50,13 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
           child: BlocListener<ButtonStateCubit, ButtonState>(
             listener: (context, state) {
               if (state is ButtonFailure) {
-                var snackbar = SnackBar(
-                  content: Text(state.message, style: const TextStyle(color: Colors.white)),
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: AppColors.error,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                AppSnackbar.show(context, state.message, AppSnackbarType.error);
               }
 
               if (state is ButtonSuccess) {
-                var snackbar = const SnackBar(
-                  content: Text("Berhasil mengajukan peminjaman"),
-                  behavior: SnackBarBehavior.floating,
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                final message = state.data as String;
+
+                AppSnackbar.show(context, message, AppSnackbarType.success);
                 AppNavigator.pushAndRemove(context, const LandingPage());
               }
             },
@@ -82,25 +76,58 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.r),
-        child: BlocProvider(
-          create: (context) => DisplayAvailableCarsCubit()
-            ..displayCars(
-                DateRangeReq(startDate: widget.rent.startDate!, endDate: widget.rent.endDate!)),
-          child: BlocBuilder<DisplayAvailableCarsCubit, DisplayAvailableCarsState>(
-            builder: (context, state) {
-              if (state is DisplayCarsLoading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is DisplayCarsLoaded) {
-                return _carList(context, state.cars);
-              } else if (state is DisplayCarsFailed) {
-                return Center(child: Text(state.message));
+      body: BlocProvider(
+        create: (context) => DisplayAvailableCarsCubit()
+          ..displayCars(
+              DateRangeReq(startDate: widget.rent.startDate!, endDate: widget.rent.endDate!)),
+        child: BlocBuilder<DisplayAvailableCarsCubit, DisplayAvailableCarsState>(
+          builder: (context, state) {
+            if (state is DisplayCarsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is DisplayCarsLoaded) {
+              final isNotEmpty = state.cars.isNotEmpty;
+
+              if (isNotEmpty) {
+                return SingleChildScrollView(
+                  padding: EdgeInsets.all(16.r),
+                  child: Column(
+                    children: [
+                      AppAlert(
+                          icon: LucideIcons.info,
+                          message:
+                              "Hanya menampilkan mobil yang tersedia sesuai tanggal peminjaman",
+                          variant: AppAlertVariant.info),
+                      SizedBox(height: 24.h),
+                      _carList(context, state.cars),
+                    ],
+                  ),
+                );
               }
 
-              return const SizedBox.shrink();
-            },
-          ),
+              return Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(16.r),
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        AppImages.emptyData,
+                        height: 100.h,
+                      ),
+                      SizedBox(height: 16.h),
+                      const Text(
+                        "Tidak ada mobil tersedia. Coba pilih tanggal lain atau hubungi admin",
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else if (state is DisplayCarsFailed) {
+              return Center(child: Text(state.message));
+            }
+
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );
@@ -118,7 +145,7 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
         childAspectRatio: 0.75,
       ),
       itemBuilder: (context, index) {
-        return CarCard(
+        return CarStatusCard(
           car: cars[index],
           selectable: true,
           onSelect: (car) {

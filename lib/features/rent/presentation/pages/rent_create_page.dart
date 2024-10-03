@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/models/date_range_req.dart';
 import 'package:rent_n_trace/core/common/models/rent_creation_req.dart';
+import 'package:rent_n_trace/core/common/widgets/app_alert.dart';
 import 'package:rent_n_trace/core/common/widgets/app_bottom_sheet.dart';
 import 'package:rent_n_trace/core/common/widgets/app_checkbox.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_date_picker_range_field.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
+import 'package:rent_n_trace/core/config/assets/app_images.dart';
+import 'package:rent_n_trace/core/config/assets/app_json.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_drivers_cubit.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_available_drivers_state.dart';
 import 'package:rent_n_trace/features/rent/presentation/pages/rent_choose_car_page.dart';
-import 'package:rent_n_trace/features/splash/presentation/bloc/splash_cubit.dart';
-import 'package:rent_n_trace/features/splash/presentation/bloc/splash_state.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
+import 'package:rent_n_trace/features/splash/presentation/bloc/user_state.dart';
 
 class RentCreatePage extends StatefulWidget {
-  const RentCreatePage({super.key});
+  final String? rejectMessage;
+  const RentCreatePage({super.key, this.rejectMessage});
 
   @override
   State<RentCreatePage> createState() => _RentCreatePageState();
@@ -40,66 +46,118 @@ class _RentCreatePageState extends State<RentCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BasicAppbar(
-        title: Text("Buat Sewa"),
+      appBar: BasicAppbar(
+        title: Text(
+          "Buat Sewa",
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20.sp,
+                color: AppColors.foreground,
+              ),
+        ),
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16.r),
-        child: BlocBuilder<SplashCubit, SplashState>(
-          builder: (context, state) {
-            if (state is SplashAuthenticated) {
-              return BasicAppButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    final rent = RentCreationReq(
-                      startDate: startDate!,
-                      endDate: endDate!,
-                      destination: _destinationCon.text,
-                      need: _needCon.text,
-                      needDetail: _detailNeedCon.text,
-                      driverId: driverId,
-                      userId: state.user.id,
+      bottomNavigationBar: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          final user = (state as UserAuthenticated).user;
+
+          if (user.divisionName != null) {
+            return Container(
+              padding: EdgeInsets.all(16.r),
+              child: BlocBuilder<UserCubit, UserState>(
+                builder: (context, state) {
+                  if (state is UserAuthenticated) {
+                    return BasicAppButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          final rent = RentCreationReq(
+                            startDate: startDate!,
+                            endDate: endDate!,
+                            destination: _destinationCon.text,
+                            need: _needCon.text,
+                            needDetail: _detailNeedCon.text,
+                            driverId: driverId,
+                            userId: state.user.id,
+                          );
+
+                          AppNavigator.push(context, RentChooseCarPage(rent: rent));
+                        }
+                      },
+                      title: "Pilih Mobil",
                     );
-
-                    AppNavigator.push(context, RentChooseCarPage(rent: rent));
                   }
+
+                  return const SizedBox.shrink();
                 },
-                title: "Pilih Mobil",
-              );
-            }
+              ),
+            );
+          }
 
-            return const SizedBox.shrink();
-          },
-        ),
+          return const SizedBox.shrink();
+        },
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _rentForm(context),
-          ],
-        ),
-      ),
-    );
-  }
+      body: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          final user = (state as UserAuthenticated).user;
 
-  Widget _rentForm(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          _dateRangeField(),
-          SizedBox(height: 16.h),
-          _destinationField(),
-          SizedBox(height: 16.h),
-          _selectNeedField(context),
-          SizedBox(height: 16.h),
-          _detailNeedField(),
-          SizedBox(height: 16.h),
-          _needDriverField(),
-          SizedBox(height: 16.h),
-        ],
+          return user.divisionName != null
+              ? SingleChildScrollView(
+                  padding: EdgeInsets.all(16.r),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.rejectMessage != null) ...[
+                          AppAlert(
+                            icon: LucideIcons.alertCircle,
+                            message: "Sesuaikan dengan alasan penolakan: ${widget.rejectMessage!}",
+                            variant: AppAlertVariant.warning,
+                          ),
+                          SizedBox(height: 20.h),
+                        ],
+                        _dateRangeField(),
+                        SizedBox(height: 20.h),
+                        _destinationField(),
+                        SizedBox(height: 20.h),
+                        _selectNeedField(context),
+                        SizedBox(height: 20.h),
+                        _detailNeedField(),
+                        SizedBox(height: 20.h),
+                        _needDriverField(),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
+                  ),
+                )
+              : Center(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Column(
+                      children: [
+                        Lottie.asset(
+                          AppJson.alert,
+                          height: 120.h,
+                        ),
+                        const Text(
+                          "Tidak bisa booking. Lengkapi data divisi di profil Anda terlebih dahulu.",
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16.h),
+                        BasicAppButton(
+                          variant: ButtonVariant.outline,
+                          title: "Lengkapi",
+                          onPressed: () {
+                            AppNavigator.push(
+                                context,
+                                const LandingPage(
+                                  defaultIndex: 3,
+                                ));
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                );
+        },
       ),
     );
   }
@@ -121,7 +179,7 @@ class _RentCreatePageState extends State<RentCreatePage> {
           },
           label: "Butuh Supir",
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 20.h),
         if (_needDriver) _driverField(context),
       ],
     );
@@ -160,7 +218,7 @@ class _RentCreatePageState extends State<RentCreatePage> {
           labelText: 'Driver',
           suffixIcon: LucideIcons.chevronDown,
           prefixIcon: LucideIcons.user,
-          readOnly: true,
+          isTriggerBottomSheet: true,
           required: _needDriver ? true : false,
         ),
       ),
@@ -185,52 +243,74 @@ class _RentCreatePageState extends State<RentCreatePage> {
 
               if (state is DisplayDriversLoaded) {
                 final drivers = state.drivers;
+                final isNotEmpty = state.drivers.isNotEmpty;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Pilih Driver",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(color: AppColors.foreground),
-                    ),
-                    SizedBox(height: 16.h),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: drivers.length,
-                      itemBuilder: (context, index) {
-                        bool isSelected = _driverCon.text == drivers[index].name;
+                if (isNotEmpty) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Pilih Driver",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(color: AppColors.foreground),
+                      ),
+                      SizedBox(height: 16.h),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: drivers.length,
+                        itemBuilder: (context, index) {
+                          bool isSelected = _driverCon.text == drivers[index].name;
 
-                        return ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          selected: isSelected,
-                          title: Row(
-                            children: [
-                              if (isSelected)
-                                const Icon(LucideIcons.check, color: AppColors.foreground)
-                              else
-                                SizedBox(width: 24.w),
-                              SizedBox(width: 8.w),
-                              Text(
-                                drivers[index].name,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            _driverCon.text = drivers[index].name;
-                            driverId = drivers[index].id;
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
-                    ),
-                  ],
+                          return ListTile(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            selected: isSelected,
+                            selectedTileColor: AppColors.primary.withOpacity(0.1),
+                            title: Row(
+                              children: [
+                                if (isSelected)
+                                  const Icon(LucideIcons.check, color: AppColors.foreground)
+                                else
+                                  SizedBox(width: 24.w),
+                                SizedBox(width: 8.w),
+                                Text(
+                                  drivers[index].name,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              _driverCon.text = drivers[index].name;
+                              driverId = drivers[index].id;
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }
+
+                return Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 16.h),
+                      Image.asset(
+                        AppImages.emptyData,
+                        height: 100.h,
+                      ),
+                      SizedBox(height: 16.h),
+                      const Text(
+                        "Tidak ada driver tersedia. Coba pilih tanggal lain atau hubungi admin",
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 16.h),
+                    ],
+                  ),
                 );
               }
 
@@ -295,7 +375,7 @@ class _RentCreatePageState extends State<RentCreatePage> {
           labelText: 'Kebutuhan',
           suffixIcon: LucideIcons.chevronDown,
           prefixIcon: LucideIcons.listChecks,
-          readOnly: true,
+          isTriggerBottomSheet: true,
           required: true,
         ),
       ),

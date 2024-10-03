@@ -28,7 +28,9 @@ class RentHistoryModel extends RentHistory {
       rentId: map['rent_id'] as String,
       latlongs: List<String>.from(map['latlongs'] as List),
       distance: map['distance'] as double,
-      fuelCost: map['fuel_cost'] as double,
+      fuelCost: (map['fuel_cost'] is int)
+          ? (map['fuel_cost'] as int).toDouble()
+          : map['fuel_cost'] as double,
       createdAt: DateTime.parse(map['created_at'] as String),
       carImage: map['rents']?['cars']?['image'] as String?,
       carName: map['rents']?['cars']?['name'] as String?,
@@ -46,6 +48,35 @@ class RentHistoryModel extends RentHistory {
       driverName: map['rents']?['drivers']?['name'] as String?,
       driverPhoto: map['rents']?['drivers']?['photo'] as String?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'rent_id': rentId,
+      'latlongs': latlongs,
+      'distance': distance,
+      'fuel_cost': fuelCost,
+      'created_at': createdAt.toIso8601String(),
+      'rents': {
+        'cars': {
+          'image': carImage,
+          'name': carName,
+          'fuel_consumption': carFuelConsumption,
+          'fuel_type': carFuelType,
+        },
+        'end_date': rentEndDate?.toIso8601String(),
+        'start_date': rentStartDate?.toIso8601String(),
+        'status': rentStatus,
+        'destination': rentDestination,
+        'need': rentNeed,
+        'need_detail': rentNeedDetail,
+        'drivers': {
+          'name': driverName,
+          'photo': driverPhoto,
+        },
+      },
+    };
   }
 
   RentHistoryModel copyWith({

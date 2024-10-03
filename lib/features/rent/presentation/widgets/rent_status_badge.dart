@@ -18,6 +18,10 @@ class RentStatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: RentStatus.getBackgroundColor(rentStatus),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: RentStatus.getBorderColor(rentStatus),
+          width: 1,
+        ),
       ),
       child: Text(
         RentStatus.getDescription(rentStatus),

@@ -5,11 +5,7 @@ import 'package:rent_n_trace/features/rent/data/datasource/rent_remote_datasrouc
 import 'package:rent_n_trace/features/rent/domain/repository/rent_repository.dart';
 
 class RentRepositoryImpl extends RentRepository {
-  @override
-  Future<Either> getCurrMonthRentHistories() async {
-    return await sl<RentRemoteDatasource>().getCurrMonthRentHistories();
-  }
-
+  // Rent
   @override
   Future<Either> getLatestRent() async {
     return await sl<RentRemoteDatasource>().getLatestRent();
@@ -23,6 +19,17 @@ class RentRepositoryImpl extends RentRepository {
   @override
   Future<Either> createRent(RentCreationReq rent) async {
     return await sl<RentRemoteDatasource>().createRent(rent);
+  }
+
+  @override
+  Future<Either> cancelRent(String id) async{
+    return await sl<RentRemoteDatasource>().cancelRent(id);
+  }
+
+  // Rent History
+  @override
+  Future<Either> getCurrMonthRentHistories() async {
+    return await sl<RentRemoteDatasource>().getCurrMonthRentHistories();
   }
 
   @override

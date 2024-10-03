@@ -9,5 +9,5 @@ abstract class LocationRepository {
   Future<Either> getActiveLocation(String rentId);
   Future<Either> updateActiveLocation(Location location);
   Future<Either> stopActiveLocation(StopTrackingReq trackingData);
-  Future<Either> updateFuelCost(FuelCostUpdateReq rentHistory);
+  Future<Either> updateFuelCost(FuelCostUpdateReq fuelCostUpdateReq);
 }

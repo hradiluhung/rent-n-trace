@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 enum ButtonVariant { defaultVariant, outline, ghost }
 
@@ -26,41 +27,64 @@ class BasicAppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (variant == ButtonVariant.outline) {
-      return OutlinedButton(
-        onPressed: !disabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+      return Skeleton.leaf(
+        child: OutlinedButton(
+          onPressed: !disabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+          ),
+          child: content ??
+              Text(
+                title,
+                style: _textStyle(context),
+              ),
         ),
-        child: content ??
-            Text(
-              title,
-              style: const TextStyle(color: AppColors.foreground, fontWeight: FontWeight.w500),
-            ),
       );
     } else if (variant == ButtonVariant.ghost) {
-      return TextButton(
-        onPressed: !disabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+      return Skeleton.leaf(
+        child: TextButton(
+          onPressed: !disabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+          ),
+          child: content ??
+              Text(
+                title,
+                style: _textStyle(context),
+              ),
         ),
-        child: content ??
-            Text(
-              title,
-              style: const TextStyle(color: AppColors.foreground, fontWeight: FontWeight.w500),
-            ),
       );
     } else {
-      return ElevatedButton(
-        onPressed: !disabled ? onPressed : null,
-        style: ElevatedButton.styleFrom(
-          minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+      return Skeleton.leaf(
+        child: ElevatedButton(
+          onPressed: !disabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            minimumSize: Size(width ?? MediaQuery.of(context).size.width, height ?? 50),
+          ),
+          child: content ??
+              Text(
+                title,
+                style: _textStyle(context),
+              ),
         ),
-        child: content ??
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-            ),
       );
     }
+  }
+
+  TextStyle? _textStyle(BuildContext context) {
+    Color textColor;
+
+    switch (variant) {
+      case ButtonVariant.outline:
+        textColor = AppColors.foreground;
+        break;
+      case ButtonVariant.ghost:
+        textColor = AppColors.foreground;
+        break;
+      default:
+        textColor = Colors.white;
+    }
+
+    return Theme.of(context).textTheme.titleSmall?.copyWith(color: textColor);
   }
 }

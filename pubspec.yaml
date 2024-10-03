@@ -51,6 +51,8 @@ dependencies:
     geolocator: ^13.0.1
     flutter_background_service: ^5.0.10
     realm: ^20.0.0
+    skeletonizer: ^1.4.2
+    image_picker: ^1.1.2
 
 dev_dependencies:
     flutter_test:

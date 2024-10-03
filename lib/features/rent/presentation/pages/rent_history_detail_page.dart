@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:rent_n_trace/core/common/helpers/extension/date_time_extension.dart';
-import 'package:rent_n_trace/core/common/helpers/extension/string_extension.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
-import 'package:rent_n_trace/core/common/widgets/user_avatar.dart';
 import 'package:rent_n_trace/core/config/assets/app_images.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/features/car/presentation/widgets/car_detailed_card.dart';
+import 'package:rent_n_trace/features/driver/presentation/widgets/driver_card.dart';
 import 'package:rent_n_trace/features/rent/domain/entities/rent_history.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_detail_rent_history_cubit.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_detail_rent_history_state.dart';
@@ -86,7 +86,10 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BasicAppbar(
-        title: Text("Detail Riwayat Peminjaman", style: Theme.of(context).textTheme.headlineMedium),
+        title: Text("Detail Riwayat Peminjaman",
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: AppColors.secondForeground,
+                )),
       ),
       body: BlocProvider(
         create: (context) =>
@@ -118,15 +121,22 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _map(rentHistory),
-        SizedBox(height: 8.h),
-        _carCard(context, rentHistory),
+        SizedBox(height: 20.h),
+        CarDetailedCard(
+            carImage: rentHistory.carImage!,
+            carName: rentHistory.carName!,
+            carFuelType: rentHistory.carFuelType!,
+            carFuelConsumption: rentHistory.carFuelConsumption!),
         if (rentHistory.driverName != null) ...[
-          SizedBox(height: 8.h),
-          _driverCard(context, rentHistory),
+          SizedBox(height: 20.h),
+          DriverCard(
+            driverName: rentHistory.driverName!,
+            driverPhoto: rentHistory.driverPhoto,
+          )
         ],
-        SizedBox(height: 16.h),
+        SizedBox(height: 20.h),
         _otherDetail(context, rentHistory),
-        SizedBox(height: 16.h),
+        SizedBox(height: 20.h),
       ],
     );
   }
@@ -163,7 +173,7 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
                   ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 20.h),
           _rentData(
             "Kebutuhan",
             Text(
@@ -173,7 +183,7 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
                   ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 20.h),
           _rentData(
             "Detail Kebutuhan",
             Text(
@@ -183,7 +193,7 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
                   ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 20.h),
           _rentData(
             "Tujuan",
             Text(
@@ -193,7 +203,7 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
                   ),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 20.h),
           _rentData(
             "Status",
             RentStatusBadge(rentStatus: rentHistory.rentStatus!),
@@ -212,95 +222,11 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
         width: double.infinity,
         height: 200.h,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(16.r), // Ensure the same border radius
+          borderRadius: BorderRadius.circular(16.r),
           child: MapWidget(
             key: const ValueKey("mapWidget"),
             onMapCreated: (mapboxMap) => _onMapCreated(mapboxMap, rentHistory),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _carCard(BuildContext context, RentHistory rent) {
-    return Card(
-      elevation: 0,
-      color: AppColors.darkBackground,
-      child: Container(
-        padding: EdgeInsets.all(16.r),
-        child: Row(
-          children: [
-            Image.network(
-              rent.carImage!,
-              height: 100,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(width: 16.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Mobil",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                  Text(
-                    rent.carName!,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    rent.carFuelType!.capitalize(),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                  Text(
-                    rent.carFuelConsumption!,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.white,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _driverCard(BuildContext context, RentHistory rentHistory) {
-    return Card(
-      elevation: 0,
-      color: AppColors.secondBackground,
-      child: Container(
-        padding: EdgeInsets.all(16.r),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            UserAvatar(name: rentHistory.driverName!, imageUrl: rentHistory.driverPhoto),
-            SizedBox(width: 16.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Supir",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Text(
-                  rentHistory.driverName!,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.foreground,
-                      ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

@@ -36,6 +36,23 @@ class RentStatus {
     }
   }
 
+  static Color getBorderColor(String status) {
+    switch (status) {
+      case pending:
+        return const Color.fromRGBO(255, 204, 0, 1);
+      case rejected:
+        return const Color.fromRGBO(255, 153, 153, 1);
+      case approved:
+        return const Color.fromRGBO(0, 200, 83, 1);
+      case tracked:
+        return const Color.fromRGBO(64, 156, 255, 1);
+      case completed:
+        return const Color.fromRGBO(128, 128, 128, 1);
+      default:
+        return const Color.fromRGBO(128, 128, 128, 1);
+    }
+  }
+
   static Color getTextColor(String status) {
     switch (status) {
       case pending:

@@ -12,6 +12,7 @@ abstract class RentRemoteDatasource {
   Future<Either> getLatestRent();
   Future<Either> getDetailRent(String id);
   Future<Either> createRent(RentCreationReq rent);
+  Future<Either> cancelRent(String id);
 
   // Rent History
   Future<Either> getCurrMonthRentHistories();
@@ -20,28 +21,7 @@ abstract class RentRemoteDatasource {
 }
 
 class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
-  @override
-  Future<Either> getCurrMonthRentHistories() async {
-    try {
-      final startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
-      final endDate = DateTime(DateTime.now().year, DateTime.now().month + 1, 1)
-          .subtract(const Duration(days: 1));
-
-      final rentsHistories = await sl<SupabaseClient>()
-          .from('rent_histories')
-          .select('*, rents(*, cars (name, image))')
-          .eq('rents.status', RentStatus.completed)
-          .gte('rents.created_at', startDate.toIso8601String())
-          .lte('rents.created_at', endDate.toIso8601String());
-
-      return Right(rentsHistories.map((rh) => RentHistoryModel.fromMap(rh)).toList());
-    } on PostgrestException catch (e) {
-      return Left(Failure(e.message));
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
-  }
-
+  // Rent
   @override
   Future<Either> getLatestRent() async {
     try {
@@ -70,10 +50,23 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
           .from('rents')
           .select(
               "*, cars(name, image, fuel_type, fuel_consumption), profiles(full_name), drivers(name, photo)")
-          .eq('id', id);
+          .eq('id', id)
+          .limit(1);
+
+      final rejectMessage = await sl<SupabaseClient>()
+          .from('reject_messages')
+          .select('message')
+          .eq('rent_id', rent.first['id'])
+          .limit(1);
 
       if (rent.isEmpty) {
         return Left(Failure('Peminjaman tidak ditemukan'));
+      }
+
+      RentModel? rentModel = RentModel.fromMap(rent.first);
+
+      if (rejectMessage.isNotEmpty) {
+        rentModel = rentModel.copyWith(rejectMessage: rejectMessage.first['message']);
       }
 
       return Right(RentModel.fromMap(rent.first));
@@ -103,6 +96,45 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
       return Left(Failure(e.message));
     } catch (e) {
       return const Left("Silakan coba lagi!");
+    }
+  }
+
+  @override
+  Future<Either> cancelRent(String id) async {
+    try {
+      await sl<SupabaseClient>().from('rents').delete().eq('id', id);
+
+      return const Right("Berhasil membatalkan peminjaman");
+    } on PostgrestException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return const Left("Silakan coba lagi!");
+    }
+  }
+
+  // Rent History
+  @override
+  Future<Either> getCurrMonthRentHistories() async {
+    try {
+      final startDate = DateTime(DateTime.now().year, DateTime.now().month, 1);
+      final endDate = DateTime(DateTime.now().year, DateTime.now().month + 1, 1)
+          .subtract(const Duration(days: 1));
+
+      final rentsHistories = await sl<SupabaseClient>()
+          .from('rent_histories')
+          .select('*, rents(*, cars (name, image))')
+          .eq('rents.status', RentStatus.completed)
+          .gte('rents.created_at', startDate.toIso8601String())
+          .lte('rents.created_at', endDate.toIso8601String());
+
+      final filteredRentsHistories =
+          rentsHistories.where((rentHistory) => rentHistory['rents'] != null).toList();
+
+      return Right(filteredRentsHistories.map((rh) => RentHistoryModel.fromMap(rh)).toList());
+    } on PostgrestException catch (e) {
+      return Left(Failure(e.message));
+    } catch (e) {
+      return Left(Failure(e.toString()));
     }
   }
 

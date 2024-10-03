@@ -21,6 +21,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<CarRemoteDatasource>(CarRemoteDatasourceImpl());
   sl.registerSingleton<DriverRemoteDatasource>(DriverRemoteDatasourceImpl());
   sl.registerSingleton<LocationRemoteDatasource>(LocationRemoteDatasourceImpl());
+  sl.registerSingleton<ProfileRemoteDatasource>(ProfileRemoteDatasourceImpl());
+  sl.registerSingleton<DivisionRemoteDatasource>(DivisionRemoteDatasourceImpl());
 
   /* Repositories */
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
@@ -28,6 +30,8 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<CarRepository>(CarRepositoryImpl());
   sl.registerSingleton<DriverRepository>(DriverRepositoryImpl());
   sl.registerSingleton<LocationRepository>(LocationRepositoryImpl());
+  sl.registerSingleton<ProfileRepository>(ProfileRepositoryImpl());
+  sl.registerSingleton<DivisionRepository>(DivisionRepositoryImpl());
 
   /* Use cases */
   // Auth
@@ -36,10 +40,17 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<Logout>(Logout());
   sl.registerSingleton<GetCurrentUser>(GetCurrentUser());
 
+  // Profile
+  sl.registerSingleton<UpdateProfile>(UpdateProfile());
+
+  // Division
+  sl.registerSingleton<GetAllDivisions>(GetAllDivisions());
+
   // Rent
   sl.registerSingleton<GetLatestRent>(GetLatestRent());
   sl.registerSingleton<GetDetailRent>(GetDetailRent());
   sl.registerSingleton<CreateRent>(CreateRent());
+  sl.registerSingleton<CancelRent>(CancelRent());
 
   // RentHistory
   sl.registerSingleton<GetCurrMonthRentHistories>(GetCurrMonthRentHistories());

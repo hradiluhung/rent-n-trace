@@ -14,4 +14,12 @@ class DisplayDetailRentCubit extends Cubit<DisplayDetailRentState> {
       (rent) => emit(DisplayDetailRentLoaded(rent)),
     );
   }
+
+  void updateRentStatus(String newStatus) {
+    if (state is DisplayDetailRentLoaded) {
+      final currentRent = (state as DisplayDetailRentLoaded).rent;
+      final updatedRent = currentRent.copyWith(status: newStatus);
+      emit(DisplayDetailRentLoaded(updatedRent));
+    }
+  }
 }

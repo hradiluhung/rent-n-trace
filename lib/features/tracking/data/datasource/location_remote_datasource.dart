@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:rent_n_trace/core/common/constants/car_status.dart';
+import 'package:rent_n_trace/core/common/constants/driver_status.dart';
 import 'package:rent_n_trace/core/common/constants/rent_status.dart';
 import 'package:rent_n_trace/core/common/models/fuel_cost_update_req.dart';
 import 'package:rent_n_trace/core/common/models/location_creation_req.dart';
@@ -15,7 +16,7 @@ abstract class LocationRemoteDatasource {
   Future<Either> getActiveLocation(String rentId);
   Future<Either> updateActiveLocation(LocationModel location);
   Future<Either> stopActiveLocation(StopTrackingReq trackingData);
-  Future<Either> updateFuelCost(FuelCostUpdateReq rentHistory);
+  Future<Either> updateFuelCost(FuelCostUpdateReq fuelCostUpdateReq);
 }
 
 class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
@@ -66,6 +67,7 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
       await sl<SupabaseClient>().from('real_time_locations').update({
         'lat': location.lat,
         'long': location.long,
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
       }).eq('rent_id', location.rentId);
 
       print("Location Updated: $location");
@@ -86,7 +88,7 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
           .from('rents')
           .update({
             'status': RentStatus.completed,
-            'updated_at': DateTime.now().toIso8601String(),
+            'updated_at': DateTime.now().toUtc().toIso8601String(),
           })
           .eq('id', trackingData.rentId!)
           .select();
@@ -99,7 +101,7 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
       final carId = rents.first['car_id'];
       await sl<SupabaseClient>().from('cars').update({
         'status': CarStatus.available,
-        'updated_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toUtc().toIso8601String(),
       }).eq('id', carId);
 
       final rentHistory = await sl<SupabaseClient>().from('rent_histories').insert({
@@ -109,31 +111,34 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
         'fuel_cost': trackingData.fuelCost,
       }).select();
 
-      print("Rent History: $rentHistory");
+      final driverId = rents.first['driver_id'];
+
+      if (driverId != null) {
+        await sl<SupabaseClient>().from('drivers').update({
+          'status': DriverStatus.available,
+          'updated_at': DateTime.now().toUtc().toIso8601String(),
+        }).eq('id', driverId);
+      }
 
       return Right(RentHistoryModel.fromMap(rentHistory.first));
     } on PostgrestException catch (e) {
-      print("PostgrestException: ${e.message}");
       return Left(Failure(e.message));
     } catch (e) {
-      print("Unhandeled Exception: $e");
       return Left(Failure(e.toString()));
     }
   }
 
   @override
-  Future<Either> updateFuelCost(FuelCostUpdateReq rentHistory) async {
+  Future<Either> updateFuelCost(FuelCostUpdateReq fuelCostUpdateReq) async {
     try {
       await sl<SupabaseClient>().from('rent_histories').update({
-        'fuel_cost': rentHistory.fuelCost,
-      }).eq('rent_id', rentHistory.rentId!);
+        'fuel_cost': fuelCostUpdateReq.fuelCost,
+      }).eq('rent_id', fuelCostUpdateReq.rentId!);
 
-      return const Right("Biaya bahan bakar berhasil diupdate!");
+      return const Right("Biaya penggunaan bensin berhasil diupdate!");
     } on PostgrestException catch (e) {
-      print("PostgrestException: ${e.message}");
       return Left(Failure(e.message));
     } catch (e) {
-      print("Unhandeled Exception: $e");
       return Left(Failure(e.toString()));
     }
   }

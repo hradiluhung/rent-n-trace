@@ -50,9 +50,9 @@ class DatePicker extends StatelessWidget {
       initialSelectedRange: selectedRange,
       onSelectionChanged: onDateSelected,
       selectionMode: DateRangePickerSelectionMode.range,
-      backgroundColor: AppColors.secondBackground,
+      backgroundColor: AppColors.dialogBackground,
       headerStyle: DateRangePickerHeaderStyle(
-        backgroundColor: AppColors.secondBackground,
+        backgroundColor: AppColors.dialogBackground,
         textAlign: TextAlign.center,
         textStyle: Theme.of(context).textTheme.bodyMedium,
       ),

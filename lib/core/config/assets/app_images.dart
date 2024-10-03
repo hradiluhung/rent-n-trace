@@ -5,4 +5,5 @@ class AppImages {
   static const logoWhite = '${basePath}logo-white.png';
   static const logoGreen = '${basePath}logo-green.png';
   static const marker = '${basePath}marker.png';
+  static const emptyData = '${basePath}empty-data.png';
 }

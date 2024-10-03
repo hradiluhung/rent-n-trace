@@ -7,7 +7,7 @@ import 'package:rent_n_trace/core/common/helpers/utils/utils.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
 import 'package:rent_n_trace/core/config/assets/app_images.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
-import 'package:rent_n_trace/features/landing/presentation/pages/landing_page.dart';
+import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/rent/domain/entities/rent_history.dart';
 import 'package:rent_n_trace/features/tracking/presentation/pages/tracking_update_fuel_cost_page.dart';
 
@@ -31,7 +31,7 @@ class _TrackingResultPageState extends State<TrackingResultPage>
     super.initState();
 
     _animationController = AnimationController(
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
 
@@ -124,11 +124,13 @@ class _TrackingResultPageState extends State<TrackingResultPage>
                 children: [
                   Text(
                     'Hasil Peminjaman',
-                    style: Theme.of(context).textTheme.headlineLarge,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: AppColors.foreground,
+                        ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 36.h),
                   _map(),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 24.h),
                   _rentResultInfo(context),
                   SizedBox(height: 24.h),
                   _rentHistoryFeedback(context),
@@ -147,34 +149,22 @@ class _TrackingResultPageState extends State<TrackingResultPage>
         Text(
           "Apakah estimasi biaya bensin sudah sesuai?",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                color: AppColors.foreground,
-              ),
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(height: 16.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            BasicAppButton(
-              onPressed: () {
-                AppNavigator.pushAndRemove(context, const LandingPage());
-              },
-              width: 80.w,
-              height: 40.h,
-              title: "Ya",
-            ),
-            SizedBox(width: 8.w),
-            BasicAppButton(
-              onPressed: () {
-                AppNavigator.push(
-                    context, TrackingUpdateFuelCostPage(rentHistory: widget.rentHistory));
-              },
-              width: 80.w,
-              height: 40.h,
-              variant: ButtonVariant.outline,
-              title: "Tidak",
-            ),
-          ],
+        BasicAppButton(
+          onPressed: () {
+            AppNavigator.push(context, TrackingUpdateFuelCostPage(rentHistory: widget.rentHistory));
+          },
+          variant: ButtonVariant.outline,
+          title: "Tidak, belum sesuai",
+        ),
+        SizedBox(height: 8.h),
+        BasicAppButton(
+          onPressed: () {
+            AppNavigator.pushAndRemove(context, const LandingPage());
+          },
+          title: "Ya, sesuai",
         ),
       ],
     );
@@ -212,14 +202,17 @@ class _TrackingResultPageState extends State<TrackingResultPage>
                 children: [
                   Text(
                     "Jarak Tempuh",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: AppColors.foreground,
-                        ),
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    '${widget.rentHistory.distance} km',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    '${(widget.rentHistory.distance / 1000).toStringAsFixed(2)} km',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: AppColors.secondForeground),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -229,14 +222,17 @@ class _TrackingResultPageState extends State<TrackingResultPage>
                 children: [
                   Text(
                     "Estimasi biaya bensin",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: AppColors.foreground,
-                        ),
+                    style: Theme.of(context).textTheme.titleSmall,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     formatToRupiah(widget.rentHistory.fuelCost),
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(color: AppColors.secondForeground),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

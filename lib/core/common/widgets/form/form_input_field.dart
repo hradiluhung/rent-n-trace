@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 
 class FormInputField extends StatefulWidget {
   final TextEditingController controller;
@@ -17,7 +18,9 @@ class FormInputField extends StatefulWidget {
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
   final bool readOnly;
+  final bool isTriggerBottomSheet;
   final String? name;
+  final String? description;
 
   const FormInputField({
     super.key,
@@ -33,9 +36,11 @@ class FormInputField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.readOnly = false,
+    this.isTriggerBottomSheet = false,
     this.name,
     this.focusNode,
     this.nextFocusNode,
+    this.description,
   });
 
   @override
@@ -71,6 +76,8 @@ class _FormInputFieldState extends State<FormInputField> {
 
   @override
   Widget build(BuildContext context) {
+    bool isReadOnly = widget.readOnly;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,6 +89,7 @@ class _FormInputFieldState extends State<FormInputField> {
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
+                color: isReadOnly ? AppColors.foreground.withOpacity(0.5) : AppColors.foreground,
               ),
             ),
           ),
@@ -99,10 +107,29 @@ class _FormInputFieldState extends State<FormInputField> {
             }
           },
           validator: _combinedValidator,
-          readOnly: widget.readOnly,
+          readOnly: isReadOnly || widget.isTriggerBottomSheet,
           decoration: InputDecoration(
+            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder?.copyWith(
+                  borderSide: BorderSide(
+                    color: isReadOnly ? AppColors.border.withOpacity(0.5) : AppColors.border,
+                    width: 1,
+                  ),
+                ),
+            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder?.copyWith(
+                  borderSide: BorderSide(
+                    color: isReadOnly
+                        ? AppColors.border.withOpacity(0.5)
+                        : AppColors.foreground.withOpacity(0.4),
+                    width: 1,
+                  ),
+                ),
             hintText: widget.hintText,
-            prefixIcon: widget.prefixIcon != null ? Icon(widget.prefixIcon) : null,
+            prefixIcon: widget.prefixIcon != null
+                ? Icon(
+                    widget.prefixIcon,
+                    color: isReadOnly ? AppColors.foreground.withOpacity(0.5) : null,
+                  )
+                : null,
             suffixIcon: widget.obscureText
                 ? IconButton(
                     icon: Icon(
@@ -121,8 +148,21 @@ class _FormInputFieldState extends State<FormInputField> {
           maxLines: widget.maxLines,
           style: TextStyle(
             fontSize: 14.sp,
+            color: isReadOnly ? AppColors.foreground.withOpacity(0.5) : AppColors.foreground,
           ),
         ),
+        if (widget.description != null) ...[
+          SizedBox(height: 4.h),
+          Padding(
+            padding: EdgeInsets.only(left: 8.w),
+            child: Text(
+              widget.description!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.foreground.withOpacity(0.5),
+                  ),
+            ),
+          ),
+        ]
       ],
     );
   }

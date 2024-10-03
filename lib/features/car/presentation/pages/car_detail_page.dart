@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rent_n_trace/core/common/helpers/extension/string_extension.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
+import 'package:rent_n_trace/core/common/widgets/label_with_value.dart';
+import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/car/domain/entity/car.dart';
 import 'package:rent_n_trace/features/car/presentation/bloc/display_detail_car_cubit.dart';
 import 'package:rent_n_trace/features/car/presentation/bloc/display_detail_car_state.dart';
@@ -16,7 +18,13 @@ class CarDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BasicAppbar(
-        title: Text("Detail Mobil", style: Theme.of(context).textTheme.headlineMedium),
+        title: Text(
+          "Detail Mobil",
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 20.sp,
+                color: AppColors.secondForeground,
+              ),
+        ),
       ),
       body: BlocProvider(
         create: (context) => DisplayDetailCarCubit()..displayDetailCar(id),
@@ -47,13 +55,13 @@ class CarDetailPage extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _carData("Name", Text(car.name)),
-            SizedBox(height: 16.h),
-            _carData("Konsumsi Bensin", Text(car.fuelConsumption)),
-            SizedBox(height: 16.h),
-            _carData("Tipe Bensin", Text(car.fuelType.capitalize())),
-            SizedBox(height: 16.h),
-            _carData("Status", CarStatusBadge(carStatus: car.status)),
+            LabelWithValue(label: "Nama", value: car.name),
+            SizedBox(height: 20.h),
+            LabelWithValue(label: "Konsumsi Bensin", value: car.fuelConsumption),
+            SizedBox(height: 20.h),
+            LabelWithValue(label: "Tipe Bensin", value: car.fuelType.capitalize()),
+            SizedBox(height: 20.h),
+            LabelWithValue(label: "Status", content: CarStatusBadge(carStatus: car.status)),
           ],
         ),
       ],
@@ -66,23 +74,6 @@ class CarDetailPage extends StatelessWidget {
       height: 200,
       width: double.infinity,
       fit: BoxFit.contain,
-    );
-  }
-
-  Widget _carData(String label, Widget value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        value,
-      ],
     );
   }
 }
