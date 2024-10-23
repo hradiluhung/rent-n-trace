@@ -45,16 +45,16 @@ class CarRemoteDatasourceImpl implements CarRemoteDatasource {
   @override
   Future<Either> getAvailableCars(DateRangeReq dateRange) async {
     try {
-      final carIds = await sl<SupabaseClient>()
-          .from('rents')
-          .select('car_id')
-          .or('and(start_date.gte.${dateRange.startDate}, start_date.lte.${dateRange.endDate}), and(end_date.gte.${dateRange.startDate}, end_date.lte.${dateRange.endDate})')
-          .or('status.eq.approved,status.eq.tracked');
+      final carIds = await sl<SupabaseClient>().rpc('get_available_car_ids', params: {
+        'date_start': dateRange.startDate.toIso8601String(),
+        'date_end': dateRange.endDate.toIso8601String()
+      });
 
       final cars = await sl<SupabaseClient>()
           .from('cars')
           .select()
-          .not('id', 'in', carIds.map((item) => item['car_id']).toList());
+          .not('id', 'in', carIds)
+          .neq('status', 'maintenance');
 
       return Right(cars.map((item) => CarModel.fromMap(item)).toList());
     } on PostgrestException catch (e) {

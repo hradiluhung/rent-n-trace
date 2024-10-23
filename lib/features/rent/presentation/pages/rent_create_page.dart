@@ -177,7 +177,7 @@ class _RentCreatePageState extends State<RentCreatePage> {
               _needDriver = value!;
             });
           },
-          label: "Butuh Supir",
+          label: "Butuh Sopir",
         ),
         SizedBox(height: 20.h),
         if (_needDriver) _driverField(context),
@@ -339,6 +339,12 @@ class _RentCreatePageState extends State<RentCreatePage> {
       controller: _dateRangeCon,
       hintText: "Waktu Peminjaman",
       required: true,
+      validator: (value) {
+        if (startDate == null || endDate == null) {
+          return 'Tanggal mulai dan akhir harus diisi';
+        }
+        return null;
+      },
       onDateSelected: (dateRange) {
         if (dateRange != null) {
           setState(() {

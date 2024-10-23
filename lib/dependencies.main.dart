@@ -23,6 +23,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<LocationRemoteDatasource>(LocationRemoteDatasourceImpl());
   sl.registerSingleton<ProfileRemoteDatasource>(ProfileRemoteDatasourceImpl());
   sl.registerSingleton<DivisionRemoteDatasource>(DivisionRemoteDatasourceImpl());
+  sl.registerSingleton<FuelVariantRemoteDatasource>(FuelVariantRemoteDatasourceImpl());
 
   /* Repositories */
   sl.registerSingleton<AuthRepository>(AuthRepositoryImpl());
@@ -32,6 +33,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<LocationRepository>(LocationRepositoryImpl());
   sl.registerSingleton<ProfileRepository>(ProfileRepositoryImpl());
   sl.registerSingleton<DivisionRepository>(DivisionRepositoryImpl());
+  sl.registerSingleton<FuelVariantRepository>(FuelVariantRepositoryImpl());
 
   /* Use cases */
   // Auth
@@ -71,4 +73,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<UpdateActiveLocation>(UpdateActiveLocation());
   sl.registerSingleton<StopActiveLocation>(StopActiveLocation());
   sl.registerSingleton<UpdateFuelCost>(UpdateFuelCost());
+
+  // Fuel Variant
+  sl.registerSingleton<GetAllFuelVariants>(GetAllFuelVariants());
 }

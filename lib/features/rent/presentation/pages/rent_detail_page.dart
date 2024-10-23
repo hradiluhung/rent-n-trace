@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/constants/rent_status.dart';
@@ -69,7 +68,6 @@ class _RentDetailPageState extends State<RentDetailPage> {
             builder: (context, state) {
               if (state is DisplayDetailRentLoaded) {
                 final status = state.rent.status;
-                final isRentToday = state.rent.startDate.isSameDate(DateTime.now());
 
                 if (status == RentStatus.approved || status == RentStatus.tracked) {
                   return BasicAppButton(
@@ -85,26 +83,7 @@ class _RentDetailPageState extends State<RentDetailPage> {
                         ),
                       );
                     },
-                    title: isRentToday
-                        ? status == RentStatus.approved
-                            ? "Mulai Perjalanan"
-                            : "Lacak Lokasi"
-                        : '',
-                    content: !isRentToday
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                LucideIcons.info,
-                              ),
-                              SizedBox(width: 8.w),
-                              const Text(
-                                "Menunggu Jadwal Pinjam",
-                              ),
-                            ],
-                          )
-                        : null,
-                    disabled: !isRentToday,
+                    title: status == RentStatus.approved ? "Mulai Perjalanan" : "Lacak Lokasi",
                   );
                 }
 
@@ -219,10 +198,15 @@ class _RentDetailPageState extends State<RentDetailPage> {
             label: "Status",
             content: RentStatusBadge(rentStatus: rent.status),
           ),
+          SizedBox(height: 20.h),
+          LabelWithValue(
+            label: "Catatan",
+            value: rent.note ?? "-",
+          ),
           if (rent.rejectMessage != null) ...[
             SizedBox(height: 20.h),
             LabelWithValue(
-              label: "Alasan ditolak",
+              label: "Alasan Ditolak",
               value: rent.rejectMessage,
             )
           ]

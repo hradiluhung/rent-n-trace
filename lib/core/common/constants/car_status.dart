@@ -7,8 +7,8 @@ class CarStatus {
 
   static const Map<String, String> descriptions = {
     available: 'Tersedia',
-    booked: 'Dibooking',
-    maintenance: 'Sedang Maintenance',
+    booked: 'Sedang Dipinjam',
+    maintenance: 'Maintenance',
   };
 
   static String getDescription(String status) {
@@ -35,7 +35,7 @@ class CarStatus {
       case booked:
         return const Color.fromRGBO(133, 77, 14, 1);
       case maintenance:
-        return const Color.fromRGBO(31, 41, 55, 1);
+        return const Color.fromRGBO(171, 171, 171, 1);
       default:
         return const Color.fromRGBO(31, 41, 55, 1);
     }

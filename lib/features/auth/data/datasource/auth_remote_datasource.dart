@@ -110,6 +110,16 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
   @override
   Future<Either> signup(UserCreationReq user) async {
     try {
+      final usernameData = await sl<SupabaseClient>()
+          .from('profiles')
+          .select('id')
+          .eq('username', user.username!)
+          .limit(1);
+
+      if (usernameData.isNotEmpty) {
+        return Left(Failure('Username sudah terdaftar'));
+      }
+
       final response = await sl<SupabaseClient>().auth.signUp(
         email: user.email,
         password: user.password!,
@@ -123,6 +133,7 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
       return Right(userData);
     } on AuthException catch (e) {
       String message = '';
+      print(e);
       if (e.code == 'user_already_exists') {
         message = 'Email sudah terdaftar';
       }

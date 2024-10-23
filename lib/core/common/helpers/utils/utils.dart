@@ -26,7 +26,7 @@ String? getMostFrequentCarName(List<RentHistory> rentHistories) {
 String formatToRupiah(double number) {
   final formatter = NumberFormat.currency(
     locale: 'id',
-    symbol: 'Rp. ',
+    symbol: 'Rp ',
     decimalDigits: 2,
   );
 

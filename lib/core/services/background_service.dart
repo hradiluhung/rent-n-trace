@@ -31,7 +31,7 @@ void onStart(ServiceInstance service) async {
   Realm realm = sl<Realm>();
   StreamSubscription<Position>? locationStream;
 
-  service.on('start-tracking').listen((event) {
+  service.on('start-tracking').listen((event) async {
     final rentId = event?['rentId'];
     final locationId = event?['locationId'];
     var locationRecord = LocationTrackingRecord(DateTime.now(), 0, locations: []);
@@ -39,6 +39,27 @@ void onStart(ServiceInstance service) async {
     realm.write(() {
       realm.add(locationRecord);
     });
+
+    // Ensure location permissions are granted before starting the stream
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      print("Location services are disabled.");
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print("Location permissions are denied");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      print("Location permissions are permanently denied");
+      return;
+    }
 
     locationStream = locationService.positionStream.listen((position) async {
       // Update real time location
@@ -88,11 +109,11 @@ void onStart(ServiceInstance service) async {
 
   service.on('finish-tracking').listen((event) {
     print("Finish tracking");
-    service.stopSelf();
     locationStream?.cancel();
     realm.write(() {
       realm.deleteAll<LocationTrackingRecord>();
     });
+    service.stopSelf();
   });
 
   service.on('stop-service').listen((event) {

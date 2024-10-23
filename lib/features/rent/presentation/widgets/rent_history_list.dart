@@ -22,7 +22,7 @@ class RentHistoryList extends StatelessWidget {
             Text(key, style: Theme.of(context).textTheme.titleMedium),
             SizedBox(height: 8.h),
             ...value.map((history) => Container(
-                padding: EdgeInsets.only(bottom: 10.h),
+                padding: EdgeInsets.only(bottom: 2.h),
                 child: RentHistoryCard(rentHistory: history))),
             SizedBox(height: 20.h),
           ],

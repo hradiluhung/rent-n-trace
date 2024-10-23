@@ -8,7 +8,7 @@ class RentHistory {
   final String? carImage;
   final String? carName;
   final String? carFuelType;
-  final String ?carFuelConsumption;
+  final String? carFuelConsumption;
   final String? rentStatus;
   final DateTime? rentStartDate;
   final DateTime? rentEndDate;
@@ -17,6 +17,7 @@ class RentHistory {
   final String? rentDestination;
   final String? driverName;
   final String? driverPhoto;
+  final String? rentNote;
 
   RentHistory({
     required this.id,
@@ -37,5 +38,6 @@ class RentHistory {
     this.rentDestination,
     this.driverName,
     this.driverPhoto,
+    this.rentNote,
   });
 }

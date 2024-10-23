@@ -20,3 +20,17 @@ String? passwordValidator(String? value) {
   }
   return null;
 }
+
+String? usernameValidator(String? value) {
+  if (value != null) {
+    if (value.isEmpty) {
+      return 'Username tidak boleh kosong';
+    } else if (value.length < 3) {
+      return 'Username harus terdiri dari minimal 3 karakter';
+    } else if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+      return 'Username hanya boleh terdiri dari huruf, angka, dan underscore';
+    }
+    return null;
+  }
+  return null;
+}

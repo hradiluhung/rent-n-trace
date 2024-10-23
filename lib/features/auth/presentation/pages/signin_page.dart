@@ -14,6 +14,7 @@ import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/auth/domain/entity/user.dart';
 import 'package:rent_n_trace/features/auth/domain/usecases/signin.dart';
+import 'package:rent_n_trace/features/auth/presentation/widgets/signup_instead.dart';
 import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
 
@@ -53,6 +54,8 @@ class SignInPage extends StatelessWidget {
                 _headingText(context),
                 SizedBox(height: 24.h),
                 _signinForm(context),
+                SizedBox(height: 24.h),
+                const SignUpInstead(),
               ],
             ),
           ),

@@ -36,8 +36,7 @@ class CarsPage extends StatelessWidget {
                 children: [
                   AppAlert(
                     icon: LucideIcons.info,
-                    message:
-                        "Mobil dibooking bisa tetap tersedia. Sesuaikan dengan tanggal peminjaman.",
+                    message: "Mobil yang sedang dipinjam tetap bisa dibooking.",
                     variant: AppAlertVariant.info,
                   ),
                   SizedBox(height: 24.h),

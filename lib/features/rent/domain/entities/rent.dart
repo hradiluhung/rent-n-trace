@@ -19,6 +19,7 @@ class Rent {
   final String? driverName;
   final String? driverPhoto;
   final String? rejectMessage;
+  final String? note;
 
   Rent(
       {required this.id,
@@ -40,7 +41,8 @@ class Rent {
       this.carImage,
       this.driverName,
       this.driverPhoto,
-      this.rejectMessage});
+      this.rejectMessage,
+      this.note});
 
   Map<String, dynamic> toJson() {
     return {
@@ -64,6 +66,7 @@ class Rent {
       'driverName': driverName,
       'driverPhoto': driverPhoto,
       'rejectMessage': rejectMessage,
+      'note': note,
     };
   }
 
@@ -87,7 +90,9 @@ class Rent {
       String? carFuelType,
       String? driverName,
       String? driverPhoto,
-      String? rejectMessage}) {
+      String? rejectMessage,
+      String? note
+      }) {
     return Rent(
       id: id ?? this.id,
       userId: userId ?? this.userId,
@@ -109,6 +114,7 @@ class Rent {
       driverName: driverName ?? this.driverName,
       driverPhoto: driverPhoto ?? this.driverPhoto,
       rejectMessage: rejectMessage ?? this.rejectMessage,
+      note: note ?? this.note,
     );
   }
 }

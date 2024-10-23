@@ -20,6 +20,7 @@ class RentHistoryModel extends RentHistory {
     super.driverPhoto,
     super.carFuelConsumption,
     super.carFuelType,
+    super.rentNote,
   });
 
   factory RentHistoryModel.fromMap(Map<String, dynamic> map) {
@@ -47,6 +48,7 @@ class RentHistoryModel extends RentHistory {
       rentNeedDetail: map['rents']?['need_detail'] as String?,
       driverName: map['rents']?['drivers']?['name'] as String?,
       driverPhoto: map['rents']?['drivers']?['photo'] as String?,
+      rentNote: map['rents']?['note'] as String?,
     );
   }
 
@@ -75,6 +77,7 @@ class RentHistoryModel extends RentHistory {
           'name': driverName,
           'photo': driverPhoto,
         },
+        'note': rentNote,
       },
     };
   }
@@ -98,6 +101,7 @@ class RentHistoryModel extends RentHistory {
     String? rentDestination,
     String? driverName,
     String? driverPhoto,
+    String? rentNote,
   }) {
     return RentHistoryModel(
       id: id ?? this.id,
@@ -118,6 +122,7 @@ class RentHistoryModel extends RentHistory {
       rentDestination: rentDestination ?? this.rentDestination,
       driverName: driverName ?? this.driverName,
       driverPhoto: driverPhoto ?? this.driverPhoto,
+      rentNote: rentNote ?? this.rentNote,
     );
   }
 }

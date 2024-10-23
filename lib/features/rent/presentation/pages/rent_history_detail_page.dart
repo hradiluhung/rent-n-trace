@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:rent_n_trace/core/common/helpers/extension/date_time_extension.dart';
+import 'package:rent_n_trace/core/common/helpers/utils/utils.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
+import 'package:rent_n_trace/core/common/widgets/label_with_value.dart';
 import 'package:rent_n_trace/core/config/assets/app_images.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/car/presentation/widgets/car_detailed_card.dart';
@@ -25,7 +27,14 @@ class RentHistoryDetailPage extends StatefulWidget {
 class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
   MapboxMap? mapboxMap;
 
+  @override
+  void dispose() {
+    mapboxMap = null;
+    super.dispose();
+  }
+
   void _flyToFitCoordinates(List<Position> coordinates) async {
+    print("is mapboxMap null? ${mapboxMap == null}");
     if (mapboxMap == null || coordinates.isEmpty) return;
 
     List<Point> points = coordinates.map((coord) => Point(coordinates: coord)).toList();
@@ -116,11 +125,60 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
     );
   }
 
+  Widget _rentHistoryStats(double fuelCost, double distance) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            children: [
+              Text(
+                "Jarak Tempuh",
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                formatMtoKm(distance),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(color: AppColors.secondForeground),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Text(
+                "Biaya bensin",
+                style: Theme.of(context).textTheme.titleSmall,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                formatToRupiah(fuelCost),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    ?.copyWith(color: AppColors.secondForeground),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _detailRentHistory(BuildContext context, RentHistory rentHistory) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _map(rentHistory),
+        SizedBox(height: 20.h),
+        _rentHistoryStats(rentHistory.fuelCost, rentHistory.distance),
         SizedBox(height: 20.h),
         CarDetailedCard(
             carImage: rentHistory.carImage!,
@@ -141,72 +199,41 @@ class _RentHistoryDetailPageState extends State<RentHistoryDetailPage> {
     );
   }
 
-  Widget _rentData(String label, Widget value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        value,
-      ],
-    );
-  }
-
   Widget _otherDetail(BuildContext context, RentHistory rentHistory) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _rentData(
-            "Tanggal Peminjaman",
-            Text(
-              "${rentHistory.rentStartDate!.toddMMMMyyyyShort()} - ${rentHistory.rentEndDate!.toddMMMMyyyyShort()}",
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondForeground,
-                  ),
-            ),
+          LabelWithValue(
+            label: "Tanggal Peminjaman",
+            value:
+                "${rentHistory.rentStartDate!.toddMMMMyyyyShort()} - ${rentHistory.rentEndDate!.toddMMMMyyyyShort()}",
           ),
           SizedBox(height: 20.h),
-          _rentData(
-            "Kebutuhan",
-            Text(
-              rentHistory.rentNeed!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondForeground,
-                  ),
-            ),
+          LabelWithValue(
+            label: "Kebutuhan",
+            value: rentHistory.rentNeed!,
           ),
           SizedBox(height: 20.h),
-          _rentData(
-            "Detail Kebutuhan",
-            Text(
-              rentHistory.rentNeedDetail!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondForeground,
-                  ),
-            ),
+          LabelWithValue(
+            label: "Detail Kebutuhan",
+            value: rentHistory.rentNeedDetail!,
           ),
           SizedBox(height: 20.h),
-          _rentData(
-            "Tujuan",
-            Text(
-              rentHistory.rentDestination!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.secondForeground,
-                  ),
-            ),
+          LabelWithValue(
+            label: "Tujuan",
+            value: rentHistory.rentDestination,
           ),
           SizedBox(height: 20.h),
-          _rentData(
-            "Status",
-            RentStatusBadge(rentStatus: rentHistory.rentStatus!),
+          LabelWithValue(
+            label: "Status",
+            content: RentStatusBadge(rentStatus: rentHistory.rentStatus!),
+          ),
+          SizedBox(height: 20.h),
+          LabelWithValue(
+            label: "Catatan",
+            value: rentHistory.rentNote ?? "-",
           ),
         ],
       ),

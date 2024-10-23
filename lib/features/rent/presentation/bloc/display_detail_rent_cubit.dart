@@ -11,7 +11,10 @@ class DisplayDetailRentCubit extends Cubit<DisplayDetailRentState> {
 
     returnedData.fold(
       (error) => emit(DisplayDetailRentFailed(error.message)),
-      (rent) => emit(DisplayDetailRentLoaded(rent)),
+      (rent) {
+        print("state.rent: ${rent.toJson()}");
+        emit(DisplayDetailRentLoaded(rent));
+      },
     );
   }
 

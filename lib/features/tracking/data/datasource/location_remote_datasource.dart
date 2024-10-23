@@ -1,6 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:rent_n_trace/core/common/constants/car_status.dart';
-import 'package:rent_n_trace/core/common/constants/driver_status.dart';
 import 'package:rent_n_trace/core/common/constants/rent_status.dart';
 import 'package:rent_n_trace/core/common/models/fuel_cost_update_req.dart';
 import 'package:rent_n_trace/core/common/models/location_creation_req.dart';
@@ -35,10 +33,8 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
 
       return Right(LocationModel.fromMap(locationData.first));
     } on PostgrestException catch (e) {
-      print("PostgrestException: ${e.message}");
       return Left(Failure(e.message));
     } catch (e) {
-      print("Unhandeled Exception: $e");
       return Left(Failure(e.toString()));
     }
   }
@@ -70,13 +66,10 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
         'updated_at': DateTime.now().toUtc().toIso8601String(),
       }).eq('rent_id', location.rentId);
 
-      print("Location Updated: $location");
       return Right(location);
     } on PostgrestException catch (e) {
-      print("PostgrestException: ${e.message}");
       return Left(Failure(e.message));
     } catch (e) {
-      print("Unhandeled Exception: $e");
       return Left(Failure(e.toString()));
     }
   }
@@ -84,6 +77,7 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
   @override
   Future<Either> stopActiveLocation(StopTrackingReq trackingData) async {
     try {
+      // Update rent status
       final rents = await sl<SupabaseClient>()
           .from('rents')
           .update({
@@ -93,17 +87,25 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
           .eq('id', trackingData.rentId!)
           .select();
 
+      if (rents.isEmpty) {
+        return Left(Failure('No rent found with the given ID'));
+      }
+
+      // Delete real-time location
       await sl<SupabaseClient>()
           .from('real_time_locations')
           .delete()
           .eq('id', trackingData.locationId!);
 
-      final carId = rents.first['car_id'];
-      await sl<SupabaseClient>().from('cars').update({
-        'status': CarStatus.available,
-        'updated_at': DateTime.now().toUtc().toIso8601String(),
-      }).eq('id', carId);
+      // Call RPC to update car and driver status
+      await sl<SupabaseClient>().rpc(
+        'update_car_driver_status',
+        params: {
+          'p_rent_id': trackingData.rentId,
+        },
+      );
 
+      // Insert rent history
       final rentHistory = await sl<SupabaseClient>().from('rent_histories').insert({
         'rent_id': trackingData.rentId,
         'latlongs': trackingData.latlongs,
@@ -111,19 +113,16 @@ class LocationRemoteDatasourceImpl extends LocationRemoteDatasource {
         'fuel_cost': trackingData.fuelCost,
       }).select();
 
-      final driverId = rents.first['driver_id'];
-
-      if (driverId != null) {
-        await sl<SupabaseClient>().from('drivers').update({
-          'status': DriverStatus.available,
-          'updated_at': DateTime.now().toUtc().toIso8601String(),
-        }).eq('id', driverId);
+      if (rentHistory.isEmpty) {
+        return Left(Failure('Failed to insert rent history'));
       }
 
       return Right(RentHistoryModel.fromMap(rentHistory.first));
     } on PostgrestException catch (e) {
+      print("PostgrestException: $e");
       return Left(Failure(e.message));
     } catch (e) {
+      print("Unknown error: $e");
       return Left(Failure(e.toString()));
     }
   }

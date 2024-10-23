@@ -28,7 +28,7 @@ import 'package:rent_n_trace/features/profile/domain/repositories/profile_reposi
 import 'package:rent_n_trace/features/profile/domain/usecases/get_all_divisions.dart';
 import 'package:rent_n_trace/features/profile/domain/usecases/logout.dart';
 import 'package:rent_n_trace/features/profile/domain/usecases/update_profile.dart';
-import 'package:rent_n_trace/features/rent/data/datasource/rent_remote_datasrouce.dart';
+import 'package:rent_n_trace/features/rent/data/datasource/rent_remote_datasource.dart';
 import 'package:rent_n_trace/features/rent/data/repository/rent_repository_impl.dart';
 import 'package:rent_n_trace/features/rent/domain/repository/rent_repository.dart';
 import 'package:rent_n_trace/features/rent/domain/usecases/rent/cancel_rent.dart';
@@ -38,11 +38,15 @@ import 'package:rent_n_trace/features/rent/domain/usecases/rent_history/get_curr
 import 'package:rent_n_trace/features/rent/domain/usecases/rent/get_latest_rent.dart';
 import 'package:rent_n_trace/features/rent/domain/usecases/rent/get_detail_rent.dart';
 import 'package:rent_n_trace/features/rent/domain/usecases/rent_history/get_detail_rent_history.dart';
+import 'package:rent_n_trace/features/tracking/data/datasource/fuel_variant_remote_datasource.dart';
 import 'package:rent_n_trace/features/tracking/data/datasource/location_remote_datasource.dart';
+import 'package:rent_n_trace/features/tracking/data/repository/fuel_variant_repository_impl.dart';
 import 'package:rent_n_trace/features/tracking/data/repository/location_repository_impl.dart';
+import 'package:rent_n_trace/features/tracking/domain/repository/fuel_variant_repository.dart';
 import 'package:rent_n_trace/features/tracking/domain/repository/location_repository.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/create_initial_locattion.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/get_active_location.dart';
+import 'package:rent_n_trace/features/tracking/domain/usecases/get_all_fuel_variants.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/stop_active_location.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/update_active_location.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/update_fuel_cost.dart';

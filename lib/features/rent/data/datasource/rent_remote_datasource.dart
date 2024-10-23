@@ -59,6 +59,8 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
           .eq('rent_id', rent.first['id'])
           .limit(1);
 
+      print("Reject Message: $rejectMessage");
+
       if (rent.isEmpty) {
         return Left(Failure('Peminjaman tidak ditemukan'));
       }
@@ -69,7 +71,7 @@ class RentRemoteDatasrouceImpl extends RentRemoteDatasource {
         rentModel = rentModel.copyWith(rejectMessage: rejectMessage.first['message']);
       }
 
-      return Right(RentModel.fromMap(rent.first));
+      return Right(rentModel);
     } on PostgrestException catch (e) {
       return Left(Failure(e.message));
     } catch (e) {

@@ -30,11 +30,14 @@ import 'package:rent_n_trace/features/home/presentation/bloc/display_rent_stats_
 import 'package:rent_n_trace/features/rent/domain/entities/rent.dart';
 import 'package:rent_n_trace/features/rent/domain/entities/rent_history.dart';
 import 'package:rent_n_trace/features/rent/presentation/bloc/display_detail_rent_cubit.dart';
+import 'package:rent_n_trace/features/tracking/domain/entity/fuel_variant.dart';
 import 'package:rent_n_trace/features/tracking/domain/entity/location.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/create_initial_locattion.dart';
 import 'package:rent_n_trace/features/tracking/domain/usecases/stop_active_location.dart';
 import 'package:rent_n_trace/features/tracking/presentation/bloc/display_active_location_cubit.dart';
 import 'package:rent_n_trace/features/tracking/presentation/bloc/display_active_location_state.dart';
+import 'package:rent_n_trace/features/tracking/presentation/bloc/display_all_fuel_variants_cubit.dart';
+import 'package:rent_n_trace/features/tracking/presentation/bloc/display_all_fuel_variants_state.dart';
 import 'package:rent_n_trace/features/tracking/presentation/pages/tracking_result_page.dart';
 
 class TrackingPage extends StatefulWidget {
@@ -49,6 +52,7 @@ class TrackingPage extends StatefulWidget {
 class _TrackingPageState extends State<TrackingPage> {
   MapboxMap? mapboxMap;
   gl.Position? currLocation;
+  FuelVariant? selectedFuelVariant;
   double distance = 0;
   PolylineAnnotationManager? polylineAnnotationManager;
   PolylineAnnotation? polylineAnnotation;
@@ -59,6 +63,7 @@ class _TrackingPageState extends State<TrackingPage> {
   String? locationId;
   late BuildContext mainContext;
   bool _mounted = true;
+  bool _isMapReady = false;
 
   @override
   void initState() {
@@ -67,6 +72,7 @@ class _TrackingPageState extends State<TrackingPage> {
 
     checkPemission();
     getInitialLocation();
+    initializeMapData();
     updateMapLocation();
   }
 
@@ -76,6 +82,111 @@ class _TrackingPageState extends State<TrackingPage> {
     mapboxMap = null;
     locationStream?.cancel();
     super.dispose();
+  }
+
+  Future<void> initializeMapData() async {
+    final locationRecord = sl<Realm>().all<LocationTrackingRecord>();
+    final initialRecord = locationRecord.firstOrNull;
+
+    if (initialRecord != null) {
+      if (_mounted) {
+        setState(() {
+          distance = initialRecord.distance;
+        });
+      }
+
+      if (initialRecord.locations.isNotEmpty) {
+        _updatePolyline(initialRecord.locations.toList());
+        await _ensureMapReadyThenFly(initialRecord.locations.last);
+      }
+    }
+  }
+
+  Future<void> _ensureMapReadyThenFly(LatLng location) async {
+    if (!_isMapReady) {
+      await Future.doWhile(() async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return !_isMapReady;
+      });
+    }
+    _flyToLocation(location);
+  }
+
+  _onMapCreated(MapboxMap mapboxMap) async {
+    this.mapboxMap = mapboxMap;
+    mapboxMap.location.updateSettings(LocationComponentSettings(enabled: true));
+
+    await mapboxMap.annotations.createPolylineAnnotationManager().then((value) {
+      polylineAnnotationManager = value;
+    });
+
+    setState(() {
+      _isMapReady = true;
+    });
+
+    initializeMapData(); // Re-initialize map data after map is created
+    if (currLocation != null) {
+      _flyToCurrentLocation();
+    }
+  }
+
+  Future<void> getInitialLocation() async {
+    final location = await gl.Geolocator.getCurrentPosition(locationSettings: locationSettings);
+
+    if (_mounted) {
+      setState(() {
+        currLocation = location;
+      });
+    }
+
+    await _ensureMapReadyThenFly(LatLng(location.latitude, location.longitude));
+  }
+
+  void _flyToLocation(LatLng location) {
+    if (mapboxMap == null) return;
+    mapboxMap!.flyTo(
+      CameraOptions(
+        center: Point(coordinates: Position(location.longitude, location.latitude)),
+        zoom: 14.0,
+      ),
+      MapAnimationOptions(duration: 2000, startDelay: 0),
+    );
+  }
+
+  void _updatePolyline(List<LatLng> locations) {
+    final coordinates = locations.map((e) => Position(e.longitude, e.latitude)).toList();
+    polylineAnnotationManager
+        ?.create(
+          PolylineAnnotationOptions(
+            geometry: LineString(coordinates: coordinates),
+            lineColor: AppColors.primary.value,
+            lineWidth: 4,
+          ),
+        )
+        .then((value) => polylineAnnotation = value);
+  }
+
+  void updateMapLocation() {
+    final locationRecord = sl<Realm>().all<LocationTrackingRecord>();
+
+    if (!isTracking && locationRecord.firstOrNull == null) return;
+
+    locationStream = locationRecord.changes.listen((changes) {
+      if (!_mounted) return;
+      if (changes.modified.isEmpty) return;
+
+      final newLocationRecord = locationRecord[changes.modified.first];
+      if (newLocationRecord.locations.isEmpty) return;
+
+      _updatePolyline(newLocationRecord.locations.toList());
+      _flyToLocation(newLocationRecord.locations.last);
+
+      if (_mounted) {
+        setState(() {
+          distance = newLocationRecord.distance;
+        });
+      }
+    });
   }
 
   Future<void> checkPemission() async {
@@ -117,81 +228,6 @@ class _TrackingPageState extends State<TrackingPage> {
         },
       );
     }
-  }
-
-  _onMapCreated(MapboxMap mapboxMap) async {
-    this.mapboxMap = mapboxMap;
-    mapboxMap.location.updateSettings(LocationComponentSettings(enabled: true));
-
-    mapboxMap.annotations.createPolylineAnnotationManager().then((value) {
-      polylineAnnotationManager = value;
-    });
-
-    if (currLocation != null) {
-      _flyToCurrentLocation();
-    }
-  }
-
-  void updateMapLocation() {
-    final locationRecord = sl<Realm>().all<LocationTrackingRecord>();
-
-    if (locationRecord.firstOrNull == null) return;
-
-    locationStream = locationRecord.changes.listen((changes) {
-      if (!_mounted) return;
-      if (changes.modified.isEmpty) return;
-
-      final newLocationRecord = locationRecord[changes.modified.first];
-      if (newLocationRecord.locations.isEmpty) return;
-
-      // Ubah parameter menjadi RealmList<LatLng>
-      _updatePolyline(newLocationRecord.locations.toList());
-      _flyToLocation(newLocationRecord.locations.last);
-
-      if (_mounted) {
-        setState(() {
-          distance = newLocationRecord.distance;
-        });
-      }
-    });
-  }
-
-  Future<void> getInitialLocation() async {
-    final location = await gl.Geolocator.getCurrentPosition(locationSettings: locationSettings);
-
-    if (_mounted) {
-      setState(() {
-        currLocation = location;
-      });
-    }
-
-    if (mapboxMap != null) {
-      _flyToCurrentLocation();
-    }
-  }
-
-  void _updatePolyline(List<LatLng> locations) {
-    final coordinates = locations.map((e) => Position(e.longitude, e.latitude)).toList();
-    polylineAnnotationManager
-        ?.create(
-          PolylineAnnotationOptions(
-            geometry: LineString(coordinates: coordinates),
-            lineColor: AppColors.primary.value,
-            lineWidth: 4,
-          ),
-        )
-        .then((value) => polylineAnnotation = value);
-  }
-
-  void _flyToLocation(LatLng location) {
-    if (mapboxMap == null) return;
-    mapboxMap!.flyTo(
-      CameraOptions(
-        center: Point(coordinates: Position(location.longitude, location.latitude)),
-        zoom: 14.0,
-      ),
-      MapAnimationOptions(duration: 2000, startDelay: 0),
-    );
   }
 
   void _flyToCurrentLocation() {
@@ -295,6 +331,221 @@ class _TrackingPageState extends State<TrackingPage> {
     );
   }
 
+  void _showDialogChooseFuelVariant(BuildContext context) {
+    FuelVariant? tempSelectedVariant = selectedFuelVariant;
+    String searchQuery = '';
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        alignment: Alignment.center,
+        child: StatefulBuilder(builder: (context, setState) {
+          return PopScope(
+            onPopInvoked: (didPop) {
+              selectedFuelVariant = null;
+            },
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
+              ),
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(16.r),
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Pilih jenis bahan bakar kendaraan Anda",
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppColors.foreground,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          "Jika beragam, pilih jenis bahan bakar yang paling banyak digunakan.",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: AppColors.secondForeground),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Cari jenis bahan bakar...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.foreground,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value.toLowerCase();
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  Flexible(
+                    child: BlocProvider(
+                      create: (context) => DisplayAllFuelVariantsCubit()..displayAllFuelVariants(),
+                      child: BlocBuilder<DisplayAllFuelVariantsCubit, DisplayAllFuelVariantsState>(
+                        builder: (context, state) {
+                          if (state is DisplayAllFuelVariantsLoading) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+
+                          if (state is DisplayAllFuelVariantsLoaded) {
+                            final fuelVariants = state.fuelVariants
+                                .where(
+                                    (variant) => variant.name.toLowerCase().contains(searchQuery))
+                                .toList();
+
+                            return Scrollbar(
+                              thumbVisibility: true,
+                              thickness: 6.0,
+                              radius: const Radius.circular(10),
+                              child: ListView.builder(
+                                padding: EdgeInsets.symmetric(horizontal: 16.r),
+                                shrinkWrap: true,
+                                itemCount: fuelVariants.length,
+                                itemBuilder: (context, index) {
+                                  final isSelected = tempSelectedVariant == fuelVariants[index];
+                                  return Material(
+                                    color: Colors.transparent,
+                                    child: ListTile(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.r),
+                                      ),
+                                      selected: isSelected,
+                                      selectedTileColor: AppColors.primary.withOpacity(0.1),
+                                      title: Row(
+                                        children: [
+                                          if (isSelected)
+                                            const Icon(LucideIcons.check,
+                                                color: AppColors.foreground)
+                                          else
+                                            SizedBox(width: 24.w),
+                                          SizedBox(width: 8.w),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                fuelVariants[index].name,
+                                                style: Theme.of(context).textTheme.bodyMedium,
+                                              ),
+                                              Text(
+                                                "${formatToRupiah(fuelVariants[index].price)} / liter",
+                                                style: Theme.of(context).textTheme.bodySmall,
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          tempSelectedVariant = fuelVariants[index];
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(16.r),
+                    child: BlocProvider(
+                      create: (context) => ButtonStateCubit(),
+                      child: BlocListener<ButtonStateCubit, ButtonState>(
+                        listener: (context, state) async {
+                          if (state is ButtonFailure) {
+                            AppSnackbar.show(context, state.message, AppSnackbarType.error);
+                          }
+
+                          if (state is ButtonSuccess) {
+                            selectedFuelVariant = tempSelectedVariant;
+
+                            final rentHistory = state.data as RentHistory;
+                            final service = FlutterBackgroundService();
+                            service.invoke('finish-tracking');
+
+                            AppNavigator.pushAndRemoveUntil(
+                              context,
+                              TrackingResultPage(
+                                rentHistory: rentHistory,
+                              ),
+                              (route) => route.isFirst,
+                            );
+                          }
+                        },
+                        child: Builder(builder: (context) {
+                          return BasicReactiveButton(
+                            title: "Selesai",
+                            height: 40.h,
+                            onPressed: tempSelectedVariant != null
+                                ? () async {
+                                    double kmPerL =
+                                        getDoubleValueOfKmPerL(widget.rent.carFuelConsumption!);
+                                    double kmDistance = distance / 1000;
+                                    double fuelCost =
+                                        getFuelCost(kmDistance, kmPerL, tempSelectedVariant!.price);
+
+                                    context.read<ButtonStateCubit>().execute(
+                                          usecase: StopActiveLocation(),
+                                          params: StopTrackingReq(
+                                            locationId: locationId,
+                                            rentId: widget.rent.id,
+                                            distance: distance,
+                                            fuelCost: fuelCost,
+                                            latlongs: sl<Realm>()
+                                                .all<LocationTrackingRecord>()
+                                                .first
+                                                .locations
+                                                .map((e) => "${e.latitude},${e.longitude}")
+                                                .toList(),
+                                          ),
+                                        );
+                                  }
+                                : null,
+                          );
+                        }),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
   void _showDialogStopTracking(BuildContext context) {
     showDialog(
       context: context,
@@ -332,58 +583,13 @@ class _TrackingPageState extends State<TrackingPage> {
                 },
               ),
               SizedBox(height: 8.h),
-              BlocProvider(
-                create: (context) => ButtonStateCubit(),
-                child: BlocListener<ButtonStateCubit, ButtonState>(
-                  listener: (context, state) async {
-                    if (state is ButtonFailure) {
-                      AppSnackbar.show(context, state.message, AppSnackbarType.error);
-                    }
-
-                    if (state is ButtonSuccess) {
-                      final rentHistory = state.data as RentHistory;
-
-                      final service = FlutterBackgroundService();
-                      service.invoke('finish-tracking');
-
-                      AppNavigator.pushAndRemoveUntil(
-                        context,
-                        TrackingResultPage(
-                          rentHistory: rentHistory,
-                        ),
-                        (route) => route.isFirst,
-                      );
-                    }
-                  },
-                  child: Builder(builder: (context) {
-                    return BasicReactiveButton(
-                      title: "Yakin",
-                      height: 40.h,
-                      onPressed: () {
-                        double kmPerL = getDoubleValueOfKmPerL(widget.rent.carFuelConsumption!);
-                        double kmDistance = distance / 1000;
-                        // TODO: Ganti harga bensin dengan harga bensin yang sesuai
-                        double fuelCost = getFuelCost(kmDistance, kmPerL, 12950);
-
-                        context.read<ButtonStateCubit>().execute(
-                              usecase: StopActiveLocation(),
-                              params: StopTrackingReq(
-                                locationId: locationId,
-                                rentId: widget.rent.id,
-                                distance: distance,
-                                fuelCost: fuelCost,
-                                latlongs: sl<Realm>()
-                                    .all<LocationTrackingRecord>()
-                                    .first
-                                    .locations
-                                    .map((e) => "${e.latitude},${e.longitude}")
-                                    .toList(),
-                              ),
-                            );
-                      },
-                    );
-                  }),
-                ),
+              BasicAppButton(
+                title: "Yakin",
+                height: 40.h,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showDialogChooseFuelVariant(context);
+                },
               )
             ],
           ),
@@ -519,12 +725,35 @@ class _TrackingPageState extends State<TrackingPage> {
                     ),
                   ),
                   SizedBox(width: 8.w),
-                  IconButton(
+                  BasicAppButton(
+                    content: Row(
+                      children: [
+                        Stack(children: <Widget>[
+                          Positioned.fill(
+                            child: Container(
+                              margin: EdgeInsets.all(2.r),
+                              color: Colors.white,
+                            ),
+                          ),
+                          const Icon(
+                            LucideIcons.square,
+                            color: Colors.white,
+                          ),
+                        ]),
+                        SizedBox(width: 8.w),
+                        Text("Selesai",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(color: Colors.white)),
+                      ],
+                    ),
                     onPressed: () {
                       _showDialogStopTracking(context);
                     },
-                    icon: const Icon(LucideIcons.square),
-                  ),
+                    width: 100.w,
+                    height: 40.h,
+                  )
                 ],
               ),
             ],
@@ -542,7 +771,7 @@ class _TrackingPageState extends State<TrackingPage> {
                     await service.startService();
 
                     // Coba cek setiap 500ms hingga maksimal 5 detik
-                    const timeout = Duration(seconds: 5);
+                    const timeout = Duration(seconds: 8);
                     const interval = Duration(milliseconds: 500);
                     final stopwatch = Stopwatch()..start();
 

@@ -115,6 +115,7 @@ class _FormInputFieldState extends State<FormInputField> {
                     width: 1,
                   ),
                 ),
+            errorMaxLines: 2,
             focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder?.copyWith(
                   borderSide: BorderSide(
                     color: isReadOnly

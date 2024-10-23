@@ -40,6 +40,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _divisionCon = TextEditingController();
   File? _newPhoto;
   String? divisionId;
+  final _formKey = GlobalKey<FormState>();
 
   void selectImage() async {
     final pickedImage = await pickImage();
@@ -101,21 +102,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
               builder: (context, state) {
                 final user = (state as UserAuthenticated).user;
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _avatarField(context, user),
-                    SizedBox(height: 20.h),
-                    _emailField(),
-                    SizedBox(height: 20.h),
-                    _fullNameField(),
-                    SizedBox(height: 20.h),
-                    _usernameField(),
-                    SizedBox(height: 20.h),
-                    _selectDivisionField(context),
-                    SizedBox(height: 20.h),
-                    _submitButton(context, user),
-                  ],
+                return Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _avatarField(context, user),
+                      SizedBox(height: 20.h),
+                      _emailField(),
+                      SizedBox(height: 20.h),
+                      _fullNameField(),
+                      SizedBox(height: 20.h),
+                      _usernameField(),
+                      SizedBox(height: 20.h),
+                      _selectDivisionField(context),
+                      SizedBox(height: 20.h),
+                      _submitButton(context, user),
+                    ],
+                  ),
                 );
               },
             ),
@@ -227,15 +231,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Builder(builder: (context) {
       return BasicReactiveButton(
         onPressed: () {
-          context.read<ButtonStateCubit>().execute(
-              usecase: UpdateProfile(),
-              params: UpdateUserReq(
-                id: user.id,
-                fullName: _fullNameCon.text,
-                username: _usernameCon.text,
-                newPhoto: _newPhoto,
-                divisionId: divisionId,
-              ));
+          if (_formKey.currentState!.validate()) {
+            context.read<ButtonStateCubit>().execute(
+                usecase: UpdateProfile(),
+                params: UpdateUserReq(
+                  id: user.id,
+                  fullName: _fullNameCon.text,
+                  username: _usernameCon.text,
+                  newPhoto: _newPhoto,
+                  divisionId: divisionId,
+                ));
+          }
         },
         title: "Simpan",
       );
@@ -317,6 +323,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       hintText: 'johndoe',
       labelText: 'Username',
       prefixIcon: LucideIcons.user2,
+      validator: usernameValidator,
       required: true,
       textInputAction: TextInputAction.done,
     );

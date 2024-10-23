@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state.dart';
 import 'package:rent_n_trace/core/common/bloc/button/button_state_cubit.dart';
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
+import 'package:rent_n_trace/core/common/helpers/validator/validator.dart';
 import 'package:rent_n_trace/core/common/models/user_creation_req.dart';
 import 'package:rent_n_trace/core/common/widgets/app_snackbar.dart';
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
@@ -13,7 +14,8 @@ import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/auth/domain/entity/user.dart';
 import 'package:rent_n_trace/features/auth/domain/usecases/signup.dart';
-import 'package:rent_n_trace/features/home/presentation/pages/home_page.dart';
+import 'package:rent_n_trace/features/auth/presentation/widgets/signin_instead.dart';
+import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
 import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
 
 class SignUpDetailPage extends StatelessWidget {
@@ -39,7 +41,7 @@ class SignUpDetailPage extends StatelessWidget {
             if (state is ButtonSuccess) {
               final user = state.data as User;
               context.read<UserCubit>().updateAuthenticated(user);
-              AppNavigator.pushAndRemove(context, const HomePage());
+              AppNavigator.pushAndRemove(context, const LandingPage());
             }
           },
           child: SingleChildScrollView(
@@ -53,6 +55,8 @@ class SignUpDetailPage extends StatelessWidget {
                 _headingText(context),
                 SizedBox(height: 24.h),
                 _signupForm(context),
+                SizedBox(height: 24.h),
+                const SignInInstead(),
               ],
             ),
           ),
@@ -99,6 +103,7 @@ class SignUpDetailPage extends StatelessWidget {
       hintText: 'johndoe',
       labelText: 'Username',
       prefixIcon: LucideIcons.user2,
+      validator: usernameValidator,
       required: true,
       textInputAction: TextInputAction.done,
     );

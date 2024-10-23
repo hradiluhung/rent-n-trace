@@ -9,6 +9,7 @@ import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
 import 'package:rent_n_trace/features/auth/presentation/pages/signup_detail_page.dart';
+import 'package:rent_n_trace/features/auth/presentation/widgets/signin_instead.dart';
 
 class SignupPage extends StatelessWidget {
   SignupPage({super.key});
@@ -35,6 +36,8 @@ class SignupPage extends StatelessWidget {
             _headingText(context),
             SizedBox(height: 24.h),
             _signupForm(context),
+            SizedBox(height: 24.h),
+            const SignInInstead(),
           ],
         ),
       ),
