@@ -56,6 +56,8 @@ class CarRemoteDatasourceImpl implements CarRemoteDatasource {
           .not('id', 'in', carIds)
           .neq('status', 'maintenance');
 
+      print("Jumlah Mobil: ${carIds.length}");
+
       return Right(cars.map((item) => CarModel.fromMap(item)).toList());
     } on PostgrestException catch (e) {
       return Left(Failure(e.message));

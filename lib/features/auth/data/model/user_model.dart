@@ -9,6 +9,7 @@ class UserModel extends User {
     super.divisionId,
     super.divisionName,
     super.photo,
+    required super.isVerified,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +21,7 @@ class UserModel extends User {
       'divisonId': divisionId,
       'divisionName': divisionName,
       'photo': photo,
+      'isVerified': isVerified,
     };
   }
 
@@ -32,6 +34,7 @@ class UserModel extends User {
       divisionId: map['division_id'] as String?,
       divisionName: map['divisions']?['name'] as String?,
       photo: map['photo'] != null ? map['photo'] as String : null,
+      isVerified: map['is_verified'] as bool,
     );
   }
 
@@ -43,6 +46,7 @@ class UserModel extends User {
     String? divisionId,
     String? divisionName,
     String? photo,
+    bool? isVerified,
   }) {
     return User(
       id: id ?? this.id,
@@ -52,6 +56,7 @@ class UserModel extends User {
       divisionId: divisionId ?? this.divisionId,
       divisionName: divisionName ?? this.divisionName,
       photo: photo ?? this.photo,
+      isVerified: isVerified ?? this.isVerified,
     );
   }
 }

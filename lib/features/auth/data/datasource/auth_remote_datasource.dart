@@ -50,19 +50,25 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
         }
 
         final userData = await getUserById(authData.user!.id);
+
+        if (userData.isVerified == false) {
+          await sl<SupabaseClient>().auth.signOut();
+          return Left(Failure('Akun belum diverifikasi. Silakan hubungi admin'));
+        }
+
         return Right(userData);
       } else {
-        final userData = await sl<SupabaseClient>()
+        final userResponse = await sl<SupabaseClient>()
             .from('profiles')
             .select('*, divisions(name)')
             .eq('username', emailOrUsername)
             .limit(1);
 
-        if (userData.isEmpty) {
+        if (userResponse.isEmpty) {
           return Left(Failure('Username tidak ditemukan'));
         }
 
-        final email = userData.first['email'] as String;
+        final email = userResponse.first['email'] as String;
         final authData = await sl<SupabaseClient>().auth.signInWithPassword(
               email: email,
               password: password,
@@ -72,7 +78,14 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
           return Left(Failure('Email atau password salah'));
         }
 
-        return Right(UserModel.fromMap(userData.first));
+        final userData = await getUserById(authData.user!.id);
+
+        if (userData.isVerified == false) {
+          await sl<SupabaseClient>().auth.signOut();
+          return Left(Failure('Akun belum diverifikasi. Silakan hubungi admin'));
+        }
+
+        return Right(UserModel.fromMap(userResponse.first));
       }
     } on AuthException catch (e) {
       String message = '';
@@ -129,11 +142,12 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
         },
       );
 
+      await sl<SupabaseClient>().auth.signOut();
+
       final userData = await getUserById(response.user!.id);
       return Right(userData);
     } on AuthException catch (e) {
       String message = '';
-      print(e);
       if (e.code == 'user_already_exists') {
         message = 'Email sudah terdaftar';
       }

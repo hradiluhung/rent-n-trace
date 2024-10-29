@@ -13,16 +13,13 @@ class DriverRemoteDatasourceImpl implements DriverRemoteDatasource {
   @override
   Future<Either> getAvailableDrivers(DateRangeReq dateRange) async {
     try {
-      final driverIds = await sl<SupabaseClient>()
-          .from('rents')
-          .select('driver_id')
-          .or('and(start_date.gte.${dateRange.startDate}, start_date.lte.${dateRange.endDate}), and(end_date.gte.${dateRange.startDate}, end_date.lte.${dateRange.endDate})')
-          .or('status.eq.approved,status.eq.tracked');
+      final driverIds = await sl<SupabaseClient>().rpc('get_available_driver_ids', params: {
+        'date_start': dateRange.startDate.toIso8601String(),
+        'date_end': dateRange.endDate.toIso8601String()
+      });
 
-      final drivers = await sl<SupabaseClient>()
-          .from('drivers')
-          .select()
-          .not('id', 'in', driverIds.map((item) => item['driver_id']).toList());
+      final drivers =
+          await sl<SupabaseClient>().from('drivers').select().not('id', 'in', driverIds);
 
       return Right(drivers.map((item) => DriverModel.fromMap(item)).toList());
     } on PostgrestException catch (e) {

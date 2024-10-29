@@ -28,19 +28,28 @@ class HomePage extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => DislayRentStatsCubit()..displayCurrentRents(),
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _welcomeText(context),
-              SizedBox(height: 24.h),
-              _stats(),
-              SizedBox(height: 24.h),
-              _cars(context),
-            ],
-          ),
-        ),
+        child: Builder(builder: (context) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<DislayRentStatsCubit>().displayCurrentRents();
+              context.read<DisplayAllCarsCubit>().displayCars();
+            },
+            color: AppColors.primary,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _welcomeText(context),
+                  SizedBox(height: 24.h),
+                  _stats(),
+                  SizedBox(height: 24.h),
+                  _cars(context),
+                ],
+              ),
+            ),
+          );
+        }),
       ),
     );
   }

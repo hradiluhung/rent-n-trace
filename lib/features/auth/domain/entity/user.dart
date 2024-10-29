@@ -6,6 +6,7 @@ class User {
   final String? divisionId;
   final String? divisionName;
   final String? photo;
+  final bool isVerified;
 
   User({
     required this.id,
@@ -15,5 +16,6 @@ class User {
     this.divisionId,
     this.divisionName,
     this.photo,
+    required this.isVerified,
   });
 }

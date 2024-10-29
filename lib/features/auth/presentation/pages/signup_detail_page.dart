@@ -12,11 +12,9 @@ import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_reactive_button.dart';
 import 'package:rent_n_trace/core/common/widgets/form/form_input_field.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
-import 'package:rent_n_trace/features/auth/domain/entity/user.dart';
 import 'package:rent_n_trace/features/auth/domain/usecases/signup.dart';
+import 'package:rent_n_trace/features/auth/presentation/pages/signin_page.dart';
 import 'package:rent_n_trace/features/auth/presentation/widgets/signin_instead.dart';
-import 'package:rent_n_trace/features/home/presentation/pages/landing_page.dart';
-import 'package:rent_n_trace/features/splash/presentation/bloc/user_cubit.dart';
 
 class SignUpDetailPage extends StatelessWidget {
   final UserCreationReq userCreationReq;
@@ -39,9 +37,11 @@ class SignUpDetailPage extends StatelessWidget {
             }
 
             if (state is ButtonSuccess) {
-              final user = state.data as User;
-              context.read<UserCubit>().updateAuthenticated(user);
-              AppNavigator.pushAndRemove(context, const LandingPage());
+              AppSnackbar.show(
+                  context,
+                  "Berhasil mendaftar. Silakan hubungi admin untuk verifikasi akun",
+                  AppSnackbarType.success);
+              AppNavigator.pushAndRemove(context, SignInPage());
             }
           },
           child: SingleChildScrollView(
