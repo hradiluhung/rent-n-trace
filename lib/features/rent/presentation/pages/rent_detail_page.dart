@@ -46,7 +46,8 @@ class _RentDetailPageState extends State<RentDetailPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => DisplayDetailRentCubit()..displayDetailRent(widget.rentId),
+          create: (context) =>
+              DisplayDetailRentCubit()..displayDetailRent(widget.rentId),
         ),
         BlocProvider(
           create: (context) => ButtonStateCubit(),
@@ -68,22 +69,32 @@ class _RentDetailPageState extends State<RentDetailPage> {
             builder: (context, state) {
               if (state is DisplayDetailRentLoaded) {
                 final status = state.rent.status;
+                final isToday = state.rent.startDate.day == DateTime.now().day;
 
-                if (status == RentStatus.approved || status == RentStatus.tracked) {
+                if (status == RentStatus.approved ||
+                    status == RentStatus.tracked) {
                   return BasicAppButton(
                     onPressed: () {
                       AppNavigator.push(
                         context,
                         MultiBlocProvider(
                           providers: [
-                            BlocProvider.value(value: mainContext.read<DislayRentStatsCubit>()),
-                            BlocProvider.value(value: context.read<DisplayDetailRentCubit>()),
+                            BlocProvider.value(
+                                value:
+                                    mainContext.read<DislayRentStatsCubit>()),
+                            BlocProvider.value(
+                                value: context.read<DisplayDetailRentCubit>()),
                           ],
                           child: TrackingPage(rent: state.rent),
                         ),
                       );
                     },
-                    title: status == RentStatus.approved ? "Mulai Perjalanan" : "Lacak Lokasi",
+                    disabled: !isToday,
+                    title: !isToday
+                        ? "Belum waktunya untuk memulai"
+                        : status == RentStatus.approved
+                            ? "Mulai Perjalanan"
+                            : "Lacak Lokasi",
                   );
                 }
 
@@ -104,22 +115,24 @@ class _RentDetailPageState extends State<RentDetailPage> {
                   return BlocListener<ButtonStateCubit, ButtonState>(
                     listener: (context, state) {
                       if (state is ButtonFailure) {
-                        AppSnackbar.show(context, state.message, AppSnackbarType.error);
+                        AppSnackbar.show(
+                            context, state.message, AppSnackbarType.error);
                       }
 
                       if (state is ButtonSuccess) {
                         final message = state.data as String;
-                        AppSnackbar.show(context, message, AppSnackbarType.success);
-                        AppNavigator.pushAndRemove(context, const LandingPage());
+                        AppSnackbar.show(
+                            context, message, AppSnackbarType.success);
+                        AppNavigator.pushAndRemove(
+                            context, const LandingPage());
                       }
                     },
                     child: Builder(builder: (context) {
                       return BasicReactiveButton(
                         variant: ButtonVariant.outline,
                         onPressed: () {
-                          context
-                              .read<ButtonStateCubit>()
-                              .execute(usecase: CancelRent(), params: widget.rentId);
+                          context.read<ButtonStateCubit>().execute(
+                              usecase: CancelRent(), params: widget.rentId);
                         },
                         title: "Batalkan Peminjaman",
                       );
@@ -151,8 +164,10 @@ class _RentDetailPageState extends State<RentDetailPage> {
                         carFuelConsumption: rent.carFuelConsumption!,
                       ),
                       if (rent.driverId != null) ...[
-                        SizedBox(height: 16.h),
-                        DriverCard(driverName: rent.driverName!, driverPhoto: rent.driverPhoto)
+                        SizedBox(height: 8.h),
+                        DriverCard(
+                            driverName: rent.driverName!,
+                            driverPhoto: rent.driverPhoto)
                       ],
                       SizedBox(height: 16.h),
                       _otherDetail(context, rent),
@@ -176,7 +191,8 @@ class _RentDetailPageState extends State<RentDetailPage> {
         children: [
           LabelWithValue(
             label: "Tanggal Peminjaman",
-            value: "${rent.startDate.toddMMMMyyyy()} - ${rent.endDate.toddMMMMyyyy()}",
+            value:
+                "${rent.startDate.toddMMMMyyyy()} - ${rent.endDate.toddMMMMyyyy()}",
           ),
           SizedBox(height: 20.h),
           LabelWithValue(

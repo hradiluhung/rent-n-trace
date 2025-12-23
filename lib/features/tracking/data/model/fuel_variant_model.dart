@@ -1,7 +1,8 @@
 import 'package:rent_n_trace/features/tracking/domain/entity/fuel_variant.dart';
 
 class FuelVariantModel extends FuelVariant {
-  FuelVariantModel({required super.id, required super.name, required super.price});
+  FuelVariantModel(
+      {required super.id, required super.name, required super.price});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -15,7 +16,7 @@ class FuelVariantModel extends FuelVariant {
     return FuelVariantModel(
       id: map['id'] as String,
       name: map['name'] as String,
-      price: map['price'] as double,
+      price: (map['price'] as num).toDouble(),
     );
   }
 

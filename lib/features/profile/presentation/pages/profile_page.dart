@@ -11,6 +11,7 @@ import 'package:rent_n_trace/core/common/widgets/button/basic_app_button.dart';
 import 'package:rent_n_trace/core/common/widgets/button/basic_reactive_button.dart';
 import 'package:rent_n_trace/core/common/widgets/user_avatar.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/core/secrets/app_secrets.dart';
 import 'package:rent_n_trace/features/auth/domain/entity/user.dart';
 import 'package:rent_n_trace/features/auth/presentation/pages/welcome_page.dart';
 import 'package:rent_n_trace/features/profile/domain/usecases/logout.dart';
@@ -133,37 +134,43 @@ class ProfilePage extends StatelessWidget {
           children: [
             UserAvatar(
               name: user.fullName,
-              imageUrl: user.photo,
+              imageUrl: "${AppSecrets.supabaseUrl}${user.photo}",
             ),
             SizedBox(width: 16.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(user.fullName, style: Theme.of(context).textTheme.titleMedium),
+                  Text(user.fullName,
+                      style: Theme.of(context).textTheme.titleMedium),
                   if (user.divisionName != null) ...[
                     Text(
                       user.divisionName!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall
-                          ?.copyWith(fontSize: 14.sp, color: AppColors.secondForeground),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontSize: 14.sp, color: AppColors.secondForeground),
                     ),
                   ] else ...[
                     Text(
                       "Belum ada divisi",
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontSize: 14.sp, color: AppColors.secondForeground.withOpacity(0.5)),
+                          fontSize: 14.sp,
+                          color: AppColors.secondForeground.withOpacity(0.5)),
                     ),
                   ],
                   SizedBox(height: 4.h),
                   Text(
                     user.email,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontSize: 14.sp),
                   ),
                   Text(
                     "@${user.username}",
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 14.sp),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontSize: 14.sp),
                   ),
                 ],
               ),

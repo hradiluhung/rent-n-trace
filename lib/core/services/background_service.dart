@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,8 +24,11 @@ Future<void> initializeBackgroundService() async {
   );
 }
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
-  // DartPluginRegistrant.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+
+  print("Background service started");
 
   await initializeDependencies();
   LocationService locationService = LocationService();
@@ -32,9 +36,11 @@ void onStart(ServiceInstance service) async {
   StreamSubscription<Position>? locationStream;
 
   service.on('start-tracking').listen((event) async {
+    print("START TRACKING NIH BOS");
     final rentId = event?['rentId'];
     final locationId = event?['locationId'];
-    var locationRecord = LocationTrackingRecord(DateTime.now(), 0, locations: []);
+    var locationRecord =
+        LocationTrackingRecord(DateTime.now(), 0, locations: []);
 
     realm.write(() {
       realm.add(locationRecord);
@@ -87,7 +93,8 @@ void onStart(ServiceInstance service) async {
           }
 
           locationRecord.timestamp = DateTime.now();
-          locationRecord.locations.add(LatLng(position.latitude, position.longitude));
+          locationRecord.locations
+              .add(LatLng(position.latitude, position.longitude));
 
           print("Save local location success");
         } catch (e) {

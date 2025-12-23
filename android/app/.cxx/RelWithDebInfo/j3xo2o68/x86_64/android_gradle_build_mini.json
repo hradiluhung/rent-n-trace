@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/adi/dev/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/adi/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/adi/Personal/Code/rent-n-trace/android/app/.cxx/RelWithDebInfo/j3xo2o68/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/adi/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/adi/Personal/Code/rent-n-trace/android/app/.cxx/RelWithDebInfo/j3xo2o68/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

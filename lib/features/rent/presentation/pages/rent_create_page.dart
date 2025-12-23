@@ -78,7 +78,8 @@ class _RentCreatePageState extends State<RentCreatePage> {
                             userId: state.user.id,
                           );
 
-                          AppNavigator.push(context, RentChooseCarPage(rent: rent));
+                          AppNavigator.push(
+                              context, RentChooseCarPage(rent: rent));
                         }
                       },
                       title: "Pilih Mobil",
@@ -109,7 +110,8 @@ class _RentCreatePageState extends State<RentCreatePage> {
                         if (widget.rejectMessage != null) ...[
                           AppAlert(
                             icon: LucideIcons.alertCircle,
-                            message: "Sesuaikan dengan alasan penolakan: ${widget.rejectMessage!}",
+                            message:
+                                "Sesuaikan dengan alasan penolakan: ${widget.rejectMessage!}",
                             variant: AppAlertVariant.warning,
                           ),
                           SizedBox(height: 20.h),
@@ -192,13 +194,20 @@ class _RentCreatePageState extends State<RentCreatePage> {
           ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
             content: const Text('Pilih waktu peminjaman terlebih dahulu'),
             backgroundColor: AppColors.alert,
-            contentTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+            contentTextStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: Colors.white),
             actions: [
               TextButton(
-                onPressed: () => ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
+                onPressed: () =>
+                    ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
                 child: Text(
                   'OK',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.white),
                 ),
               ),
             ],
@@ -235,7 +244,8 @@ class _RentCreatePageState extends State<RentCreatePage> {
             ..displayDrivers(
               DateRangeReq(startDate: startDate!, endDate: endDate!),
             ),
-          child: BlocBuilder<DisplayAvailableDriversCubit, DisplayAvailableDriversState>(
+          child: BlocBuilder<DisplayAvailableDriversCubit,
+              DisplayAvailableDriversState>(
             builder: (context, state) {
               if (state is DisplayDriversLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -262,18 +272,21 @@ class _RentCreatePageState extends State<RentCreatePage> {
                         shrinkWrap: true,
                         itemCount: drivers.length,
                         itemBuilder: (context, index) {
-                          bool isSelected = _driverCon.text == drivers[index].name;
+                          bool isSelected =
+                              _driverCon.text == drivers[index].name;
 
                           return ListTile(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16.r),
                             ),
                             selected: isSelected,
-                            selectedTileColor: AppColors.primary.withOpacity(0.1),
+                            selectedTileColor:
+                                AppColors.primary.withValues(alpha: 0.1),
                             title: Row(
                               children: [
                                 if (isSelected)
-                                  const Icon(LucideIcons.check, color: AppColors.foreground)
+                                  const Icon(LucideIcons.check,
+                                      color: AppColors.foreground)
                                 else
                                   SizedBox(width: 24.w),
                                 SizedBox(width: 8.w),
@@ -399,8 +412,10 @@ class _RentCreatePageState extends State<RentCreatePage> {
         children: [
           Text(
             "Pilih Kebutuhan",
-            style:
-                Theme.of(context).textTheme.headlineMedium?.copyWith(color: AppColors.foreground),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                ?.copyWith(color: AppColors.foreground),
           ),
           SizedBox(height: 16.h),
           ListView.builder(

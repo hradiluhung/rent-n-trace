@@ -65,9 +65,8 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
                 onPressed: selectedCar != null
                     ? () {
                         widget.rent.carId = selectedCar!.id;
-                        context
-                            .read<ButtonStateCubit>()
-                            .execute(usecase: CreateRent(), params: widget.rent);
+                        context.read<ButtonStateCubit>().execute(
+                            usecase: CreateRent(), params: widget.rent);
                       }
                     : null,
                 title: "Ajukan Sewa",
@@ -78,9 +77,11 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
       ),
       body: BlocProvider(
         create: (context) => DisplayAvailableCarsCubit()
-          ..displayCars(
-              DateRangeReq(startDate: widget.rent.startDate!, endDate: widget.rent.endDate!)),
-        child: BlocBuilder<DisplayAvailableCarsCubit, DisplayAvailableCarsState>(
+          ..displayCars(DateRangeReq(
+              startDate: widget.rent.startDate!,
+              endDate: widget.rent.endDate!)),
+        child:
+            BlocBuilder<DisplayAvailableCarsCubit, DisplayAvailableCarsState>(
           builder: (context, state) {
             if (state is DisplayCarsLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -142,7 +143,7 @@ class _RentChooseCarPageState extends State<RentChooseCarPage> {
         crossAxisCount: 2,
         crossAxisSpacing: 16.w,
         mainAxisSpacing: 16.h,
-        childAspectRatio: 0.75,
+        childAspectRatio: 1 / 1.2,
       ),
       itemBuilder: (context, index) {
         return CarStatusCard(

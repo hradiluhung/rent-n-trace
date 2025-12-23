@@ -1,0 +1,2 @@
+/Users/adi/Personal/Code/rent-n-trace/android/app/.cxx/Debug/322u3k4n/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/adi/Personal/Code/rent-n-trace/android/app/.cxx/Debug/322u3k4n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

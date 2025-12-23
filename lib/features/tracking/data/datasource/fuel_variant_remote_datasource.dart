@@ -12,11 +12,13 @@ class FuelVariantRemoteDatasourceImpl extends FuelVariantRemoteDatasource {
   @override
   Future<Either> getAllFuelVariants() async {
     try {
-      final fuelVariants = await sl<SupabaseClient>().from('fuel_variants').select();
+      final fuelVariants =
+          await sl<SupabaseClient>().from('fuel_variants').select();
 
       print("Fuel Variants: $fuelVariants");
 
-      return Right(fuelVariants.map((item) => FuelVariantModel.fromMap(item)).toList());
+      return Right(
+          fuelVariants.map((item) => FuelVariantModel.fromMap(item)).toList());
     } on PostgrestException catch (e) {
       print("PostgrestException: $e");
       return Left(Failure(e.message));

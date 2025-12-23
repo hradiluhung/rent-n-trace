@@ -6,7 +6,8 @@ String? getMostFrequentCarName(List<RentHistory> rentHistories) {
 
   for (var history in rentHistories) {
     if (history.carName != null) {
-      carNameFrequency[history.carName!] = (carNameFrequency[history.carName!] ?? 0) + 1;
+      carNameFrequency[history.carName!] =
+          (carNameFrequency[history.carName!] ?? 0) + 1;
     }
   }
 
@@ -46,7 +47,8 @@ double getFuelCost(double distance, double kmPerL, double fuelPrice) {
   return fuelCost;
 }
 
-Map<String, List<RentHistory>> groupRentHistoriesByTimePeriod(List<RentHistory> histories) {
+Map<String, List<RentHistory>> groupRentHistoriesByTimePeriod(
+    List<RentHistory> histories) {
   final now = DateTime.now();
 
   final groupedHistories = <String, List<RentHistory>>{};

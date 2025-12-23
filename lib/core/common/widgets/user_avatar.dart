@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rent_n_trace/core/secrets/app_secrets.dart';
 
 enum UserAvatarSize { small, medium, large }
 
@@ -50,7 +51,7 @@ class UserAvatar extends StatelessWidget {
       radius: _getAvatarRadius(),
       backgroundColor: Colors.grey[400],
       backgroundImage: imageUrl != null
-          ? NetworkImage(imageUrl!)
+          ? NetworkImage("${AppSecrets.supabaseUrl}$imageUrl")
           : imageFile != null
               ? FileImage(imageFile!)
               : null,

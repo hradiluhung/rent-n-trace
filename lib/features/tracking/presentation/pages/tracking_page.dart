@@ -56,7 +56,8 @@ class _TrackingPageState extends State<TrackingPage> {
   double distance = 0;
   PolylineAnnotationManager? polylineAnnotationManager;
   PolylineAnnotation? polylineAnnotation;
-  StreamSubscription<RealmResultsChanges<LocationTrackingRecord>>? locationStream;
+  StreamSubscription<RealmResultsChanges<LocationTrackingRecord>>?
+      locationStream;
   bool isTracking = false;
   bool isPaused = false;
   bool isLoadingInitialBgService = false;
@@ -131,7 +132,8 @@ class _TrackingPageState extends State<TrackingPage> {
   }
 
   Future<void> getInitialLocation() async {
-    final location = await gl.Geolocator.getCurrentPosition(locationSettings: locationSettings);
+    final location = await gl.Geolocator.getCurrentPosition(
+        locationSettings: locationSettings);
 
     if (_mounted) {
       setState(() {
@@ -146,7 +148,8 @@ class _TrackingPageState extends State<TrackingPage> {
     if (mapboxMap == null) return;
     mapboxMap!.flyTo(
       CameraOptions(
-        center: Point(coordinates: Position(location.longitude, location.latitude)),
+        center:
+            Point(coordinates: Position(location.longitude, location.latitude)),
         zoom: 14.0,
       ),
       MapAnimationOptions(duration: 2000, startDelay: 0),
@@ -154,7 +157,8 @@ class _TrackingPageState extends State<TrackingPage> {
   }
 
   void _updatePolyline(List<LatLng> locations) {
-    final coordinates = locations.map((e) => Position(e.longitude, e.latitude)).toList();
+    final coordinates =
+        locations.map((e) => Position(e.longitude, e.latitude)).toList();
     polylineAnnotationManager
         ?.create(
           PolylineAnnotationOptions(
@@ -195,7 +199,8 @@ class _TrackingPageState extends State<TrackingPage> {
       await Permission.location.request();
     }
 
-    bool locationAlwaysDenied = await Permission.locationAlways.isPermanentlyDenied;
+    bool locationAlwaysDenied =
+        await Permission.locationAlways.isPermanentlyDenied;
     if (locationAlwaysDenied && mounted) {
       showDialog(
         context: context,
@@ -270,7 +275,8 @@ class _TrackingPageState extends State<TrackingPage> {
                 child: BlocListener<ButtonStateCubit, ButtonState>(
                   listener: (context, state) {
                     if (state is ButtonFailure) {
-                      AppSnackbar.show(context, state.message, AppSnackbarType.error);
+                      AppSnackbar.show(
+                          context, state.message, AppSnackbarType.error);
                     }
 
                     if (state is ButtonSuccess) {
@@ -365,9 +371,10 @@ class _TrackingPageState extends State<TrackingPage> {
                       children: [
                         Text(
                           "Pilih jenis bahan bakar kendaraan Anda",
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: AppColors.foreground,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: AppColors.foreground,
+                                  ),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 8.h),
@@ -406,17 +413,21 @@ class _TrackingPageState extends State<TrackingPage> {
                   SizedBox(height: 16.h),
                   Flexible(
                     child: BlocProvider(
-                      create: (context) => DisplayAllFuelVariantsCubit()..displayAllFuelVariants(),
-                      child: BlocBuilder<DisplayAllFuelVariantsCubit, DisplayAllFuelVariantsState>(
+                      create: (context) => DisplayAllFuelVariantsCubit()
+                        ..displayAllFuelVariants(),
+                      child: BlocBuilder<DisplayAllFuelVariantsCubit,
+                          DisplayAllFuelVariantsState>(
                         builder: (context, state) {
                           if (state is DisplayAllFuelVariantsLoading) {
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
 
                           if (state is DisplayAllFuelVariantsLoaded) {
                             final fuelVariants = state.fuelVariants
-                                .where(
-                                    (variant) => variant.name.toLowerCase().contains(searchQuery))
+                                .where((variant) => variant.name
+                                    .toLowerCase()
+                                    .contains(searchQuery))
                                 .toList();
 
                             return Scrollbar(
@@ -428,15 +439,18 @@ class _TrackingPageState extends State<TrackingPage> {
                                 shrinkWrap: true,
                                 itemCount: fuelVariants.length,
                                 itemBuilder: (context, index) {
-                                  final isSelected = tempSelectedVariant == fuelVariants[index];
+                                  final isSelected = tempSelectedVariant ==
+                                      fuelVariants[index];
                                   return Material(
                                     color: Colors.transparent,
                                     child: ListTile(
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.r),
+                                        borderRadius:
+                                            BorderRadius.circular(16.r),
                                       ),
                                       selected: isSelected,
-                                      selectedTileColor: AppColors.primary.withOpacity(0.1),
+                                      selectedTileColor:
+                                          AppColors.primary.withOpacity(0.1),
                                       title: Row(
                                         children: [
                                           if (isSelected)
@@ -446,15 +460,20 @@ class _TrackingPageState extends State<TrackingPage> {
                                             SizedBox(width: 24.w),
                                           SizedBox(width: 8.w),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 fuelVariants[index].name,
-                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium,
                                               ),
                                               Text(
                                                 "${formatToRupiah(fuelVariants[index].price)} / liter",
-                                                style: Theme.of(context).textTheme.bodySmall,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall,
                                               ),
                                             ],
                                           )
@@ -462,7 +481,8 @@ class _TrackingPageState extends State<TrackingPage> {
                                       ),
                                       onTap: () {
                                         setState(() {
-                                          tempSelectedVariant = fuelVariants[index];
+                                          tempSelectedVariant =
+                                              fuelVariants[index];
                                         });
                                       },
                                     ),
@@ -484,7 +504,8 @@ class _TrackingPageState extends State<TrackingPage> {
                       child: BlocListener<ButtonStateCubit, ButtonState>(
                         listener: (context, state) async {
                           if (state is ButtonFailure) {
-                            AppSnackbar.show(context, state.message, AppSnackbarType.error);
+                            AppSnackbar.show(
+                                context, state.message, AppSnackbarType.error);
                           }
 
                           if (state is ButtonSuccess) {
@@ -509,11 +530,11 @@ class _TrackingPageState extends State<TrackingPage> {
                             height: 40.h,
                             onPressed: tempSelectedVariant != null
                                 ? () async {
-                                    double kmPerL =
-                                        getDoubleValueOfKmPerL(widget.rent.carFuelConsumption!);
+                                    double kmPerL = getDoubleValueOfKmPerL(
+                                        widget.rent.carFuelConsumption!);
                                     double kmDistance = distance / 1000;
-                                    double fuelCost =
-                                        getFuelCost(kmDistance, kmPerL, tempSelectedVariant!.price);
+                                    double fuelCost = getFuelCost(kmDistance,
+                                        kmPerL, tempSelectedVariant!.price);
 
                                     context.read<ButtonStateCubit>().execute(
                                           usecase: StopActiveLocation(),
@@ -526,7 +547,8 @@ class _TrackingPageState extends State<TrackingPage> {
                                                 .all<LocationTrackingRecord>()
                                                 .first
                                                 .locations
-                                                .map((e) => "${e.latitude},${e.longitude}")
+                                                .map((e) =>
+                                                    "${e.latitude},${e.longitude}")
                                                 .toList(),
                                           ),
                                         );
@@ -567,10 +589,8 @@ class _TrackingPageState extends State<TrackingPage> {
               SizedBox(height: 8.h),
               Text(
                 "Pastikan Anda telah sampai di tujuan dan menyerahkan kendaraan.",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: AppColors.secondForeground, fontSize: 14.sp),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.secondForeground, fontSize: 14.sp),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 24.h),
@@ -603,7 +623,7 @@ class _TrackingPageState extends State<TrackingPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Track Peminjaman",
+          "Lacak Peminjaman",
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontSize: 20.sp,
                 color: AppColors.foreground,
@@ -638,8 +658,10 @@ class _TrackingPageState extends State<TrackingPage> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
           child: BlocProvider(
-            create: (context) => DisplayActiveLocationCubit()..displayLocation(widget.rent.id),
-            child: BlocListener<DisplayActiveLocationCubit, DisplayActiveLocationState>(
+            create: (context) =>
+                DisplayActiveLocationCubit()..displayLocation(widget.rent.id),
+            child: BlocListener<DisplayActiveLocationCubit,
+                DisplayActiveLocationState>(
               listener: (context, state) {
                 if (state is DisplayLocationLoaded) {
                   if (state.location == null) {
@@ -654,7 +676,8 @@ class _TrackingPageState extends State<TrackingPage> {
                   }
                 }
               },
-              child: BlocBuilder<DisplayActiveLocationCubit, DisplayActiveLocationState>(
+              child: BlocBuilder<DisplayActiveLocationCubit,
+                  DisplayActiveLocationState>(
                 builder: (context, state) {
                   if (state is DisplayLocationLoaded) {
                     return Column(
@@ -766,9 +789,11 @@ class _TrackingPageState extends State<TrackingPage> {
 
                   final service = FlutterBackgroundService();
                   var isRunning = await service.isRunning();
+                  print("COBA START ATAU ENGGA");
 
                   if (!isRunning) {
                     await service.startService();
+                    print("START SERVICE BOS");
 
                     // Coba cek setiap 500ms hingga maksimal 5 detik
                     const timeout = Duration(seconds: 8);
@@ -804,7 +829,8 @@ class _TrackingPageState extends State<TrackingPage> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       ),
                       SizedBox(width: 4.w),
@@ -816,8 +842,10 @@ class _TrackingPageState extends State<TrackingPage> {
                     ],
                     SizedBox(width: 8.w),
                     Text("Mulai",
-                        style:
-                            Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.white)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleSmall
+                            ?.copyWith(color: Colors.white)),
                   ],
                 ),
                 disabled: isLoadingInitialBgService,

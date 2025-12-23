@@ -35,7 +35,8 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
   }
 
   @override
-  Future<Either> signin({required String emailOrUsername, required String password}) async {
+  Future<Either> signin(
+      {required String emailOrUsername, required String password}) async {
     try {
       final isEmail = emailOrUsername.contains('@');
 
@@ -53,7 +54,8 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
 
         if (userData.isVerified == false) {
           await sl<SupabaseClient>().auth.signOut();
-          return Left(Failure('Akun belum diverifikasi. Silakan hubungi admin'));
+          return Left(
+              Failure('Akun belum diverifikasi. Silakan hubungi admin'));
         }
 
         return Right(userData);
@@ -82,7 +84,8 @@ class AuthRemoteDatasourceImpl extends AuthRemoteDatasource {
 
         if (userData.isVerified == false) {
           await sl<SupabaseClient>().auth.signOut();
-          return Left(Failure('Akun belum diverifikasi. Silakan hubungi admin'));
+          return Left(
+              Failure('Akun belum diverifikasi. Silakan hubungi admin'));
         }
 
         return Right(UserModel.fromMap(userResponse.first));

@@ -4,6 +4,7 @@ import 'package:rent_n_trace/core/common/helpers/extension/date_time_extension.d
 import 'package:rent_n_trace/core/common/helpers/navigator/app_navigator.dart';
 import 'package:rent_n_trace/core/common/helpers/utils/utils.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/core/secrets/app_secrets.dart';
 import 'package:rent_n_trace/features/rent/domain/entities/rent_history.dart';
 import 'package:rent_n_trace/features/rent/presentation/pages/rent_history_detail_page.dart';
 
@@ -15,7 +16,8 @@ class RentHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppNavigator.push(context, RentHistoryDetailPage(rentHistoryId: rentHistory.id));
+        AppNavigator.push(
+            context, RentHistoryDetailPage(rentHistoryId: rentHistory.id));
       },
       child: Card(
         child: Container(
@@ -32,7 +34,7 @@ class RentHistoryCard extends StatelessWidget {
                 children: [
                   if (rentHistory.carImage != null)
                     Image.network(
-                      rentHistory.carImage!,
+                      "${AppSecrets.supabaseUrl}${rentHistory.carImage!}",
                       width: 80.r,
                       fit: BoxFit.contain,
                     ),
@@ -57,22 +59,28 @@ class RentHistoryCard extends StatelessWidget {
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 4.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
-                                borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                                border: Border.all(color: AppColors.border, width: 0.5),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.r)),
+                                border: Border.all(
+                                    color: AppColors.border, width: 0.5),
                               ),
                               child: Text(formatMtoKm(rentHistory.distance),
                                   style: Theme.of(context).textTheme.bodySmall),
                             ),
                             SizedBox(width: 8.w),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 4.w, vertical: 2.h),
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
-                                borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                                border: Border.all(color: AppColors.border, width: 0.5),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.r)),
+                                border: Border.all(
+                                    color: AppColors.border, width: 0.5),
                               ),
                               child: Text(formatToRupiah(rentHistory.fuelCost),
                                   style: Theme.of(context).textTheme.bodySmall),

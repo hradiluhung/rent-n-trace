@@ -1,4 +1,4 @@
-class FuelVariant{
+class FuelVariant {
   final String id;
   final String name;
   final double price;

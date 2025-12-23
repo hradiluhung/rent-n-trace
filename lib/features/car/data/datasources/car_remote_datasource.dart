@@ -45,7 +45,8 @@ class CarRemoteDatasourceImpl implements CarRemoteDatasource {
   @override
   Future<Either> getAvailableCars(DateRangeReq dateRange) async {
     try {
-      final carIds = await sl<SupabaseClient>().rpc('get_available_car_ids', params: {
+      final carIds =
+          await sl<SupabaseClient>().rpc('get_unavailable_car_ids', params: {
         'date_start': dateRange.startDate.toIso8601String(),
         'date_end': dateRange.endDate.toIso8601String()
       });

@@ -5,6 +5,7 @@ import 'package:rent_n_trace/core/common/helpers/extension/string_extension.dart
 import 'package:rent_n_trace/core/common/widgets/basic_appbar.dart';
 import 'package:rent_n_trace/core/common/widgets/label_with_value.dart';
 import 'package:rent_n_trace/core/config/theme/app_colors.dart';
+import 'package:rent_n_trace/core/secrets/app_secrets.dart';
 import 'package:rent_n_trace/features/car/domain/entity/car.dart';
 import 'package:rent_n_trace/features/car/presentation/bloc/display_detail_car_cubit.dart';
 import 'package:rent_n_trace/features/car/presentation/bloc/display_detail_car_state.dart';
@@ -57,11 +58,15 @@ class CarDetailPage extends StatelessWidget {
           children: [
             LabelWithValue(label: "Nama", value: car.name),
             SizedBox(height: 20.h),
-            LabelWithValue(label: "Konsumsi Bensin", value: car.fuelConsumption),
+            LabelWithValue(
+                label: "Konsumsi Bensin", value: car.fuelConsumption),
             SizedBox(height: 20.h),
-            LabelWithValue(label: "Tipe Bensin", value: car.fuelType.capitalize()),
+            LabelWithValue(
+                label: "Tipe Bensin", value: car.fuelType.capitalize()),
             SizedBox(height: 20.h),
-            LabelWithValue(label: "Status", content: CarStatusBadge(carStatus: car.status)),
+            LabelWithValue(
+                label: "Status",
+                content: CarStatusBadge(carStatus: car.status)),
           ],
         ),
       ],
@@ -69,11 +74,14 @@ class CarDetailPage extends StatelessWidget {
   }
 
   Widget _carImage(String image) {
-    return Image.network(
-      image,
-      height: 200,
-      width: double.infinity,
-      fit: BoxFit.contain,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.r),
+      child: Image.network(
+        "${AppSecrets.supabaseUrl}/$image",
+        height: 200,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      ),
     );
   }
 }
